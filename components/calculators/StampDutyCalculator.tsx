@@ -27,6 +27,7 @@ export function StampDutyCalculator() {
   const [formData, setFormData] = useState({
     propertyValue: '',
     state: '',
+    propertyType: '',
     isFirstTimeBuyer: false,
     isWithinFamily: false,
   });
@@ -46,6 +47,7 @@ export function StampDutyCalculator() {
         body: JSON.stringify({
           propertyValue: parseFloat(formData.propertyValue),
           state: formData.state,
+          propertyType: formData.propertyType,
           isFirstTimeBuyer: formData.isFirstTimeBuyer,
           isWithinFamily: formData.isWithinFamily,
         }),
@@ -71,7 +73,7 @@ export function StampDutyCalculator() {
   return (
     <div className="space-y-6">
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
             <Label htmlFor="propertyValue">Property Value (₹)</Label>
             <Input
@@ -94,6 +96,24 @@ export function StampDutyCalculator() {
                 <SelectItem value="delhi">Delhi</SelectItem>
                 <SelectItem value="karnataka">Karnataka</SelectItem>
                 <SelectItem value="tamilnadu">Tamil Nadu</SelectItem>
+                <SelectItem value="gujarat">Gujarat</SelectItem>
+                <SelectItem value="rajasthan">Rajasthan</SelectItem>
+                <SelectItem value="uttarpradesh">Uttar Pradesh</SelectItem>
+                <SelectItem value="punjab">Punjab</SelectItem>
+                <SelectItem value="haryana">Haryana</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <Label htmlFor="propertyType">Property Type</Label>
+            <Select onValueChange={(value) => handleInputChange('propertyType', value)}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select property type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="residential">Residential</SelectItem>
+                <SelectItem value="commercial">Commercial</SelectItem>
+                <SelectItem value="agricultural">Agricultural</SelectItem>
               </SelectContent>
             </Select>
           </div>

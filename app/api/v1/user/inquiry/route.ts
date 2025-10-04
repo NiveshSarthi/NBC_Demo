@@ -5,14 +5,9 @@ import { prisma } from '@/lib/database';
 
 export async function POST(request: NextRequest) {
   try {
-    // Get user ID from middleware
+    // Get user ID from middleware (optional for anonymous)
     const userId = request.headers.get('x-user-id');
-    if (!userId) {
-      return NextResponse.json(
-        { error: { code: 'AUTH_REQUIRED', message: 'Authentication required' } },
-        { status: 401 }
-      );
-    }
+    const isAnonymous = !userId;
 
     const body = await request.json();
 
@@ -42,25 +37,37 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Initialize messages array with the initial message
+    const initialMessage = {
+      sender_id: isAnonymous ? null : parseInt(userId),
+      content: message,
+      timestamp: new Date().toISOString(),
+      is_from_user: true,
+    };
+
     // Create inquiry
     const inquiry = await prisma.inquiry.create({
       data: {
         property_id: propertyId,
-        user_id: parseInt(userId),
-        name,
-        email,
-        phone,
+        user_id: isAnonymous ? null : parseInt(userId),
+        name: isAnonymous ? null : (name ?? null),
+        email: isAnonymous ? null : (email ?? null),
+        phone: isAnonymous ? null : (phone ?? null),
         message,
         inquiry_type: inquiryType,
-      },
+        is_anonymous: isAnonymous,
+        messages: [initialMessage],
+      } as any,
     });
 
-    // Track inquiry analytics
-    await PropertyModel.trackEvent(
-      propertyId,
-      'inquiry',
-      parseInt(userId)
-    );
+    // Track inquiry analytics (skip user_id for anonymous)
+    if (!isAnonymous) {
+      await PropertyModel.trackEvent(
+        propertyId,
+        'inquiry',
+        parseInt(userId)
+      );
+    }
 
     return NextResponse.json({
       inquiry: {

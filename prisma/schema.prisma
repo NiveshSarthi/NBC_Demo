@@ -118,6 +118,45 @@ enum InquiryStatus {
   closed
 }
 
+enum ReraApprovalStatus {
+  approved
+  pending
+  not_registered
+}
+
+enum CallType {
+  masked
+  direct
+}
+
+enum CallStatus {
+  scheduled
+  initiated
+  completed
+  missed
+}
+
+enum LoanStatus {
+  draft
+  submitted
+  approved
+  rejected
+}
+
+enum OfferType {
+  festival
+  builder
+  seasonal
+  limited_time
+}
+
+enum ViewingStatus {
+  scheduled
+  confirmed
+  completed
+  cancelled
+}
+
 model User {
   id                Int      @id @default(autoincrement())
   email             String   @unique
@@ -137,20 +176,47 @@ model User {
   last_login        DateTime?
 
   // Relations
-  properties        Property[] @relation("CreatedBy")
-  analytics         Analytic[]
-  searches          UserSearch[]
-  inquiries         Inquiry[]
-  responded_inquiries Inquiry[] @relation("RespondedBy")
-  payments          Payment[]
+    properties           Property[] @relation("CreatedBy")
+    analytics            Analytic[]
+    searches             UserSearch[]
+    inquiries            Inquiry[]
+    responded_inquiries  Inquiry[] @relation("RespondedBy")
+    payments             Payment[]
+    calls                Call[] @relation("UserCalls")
+    agent_calls          Call[] @relation("AgentCalls")
+    loan_applications    LoanApplication[]
+    saved_properties     SavedProperty[]
+    saved_searches       SavedSearch[]
+    property_reviews     PropertyReview[]
+    forum_posts          CommunityForumPost[]
+    viewing_schedules    ViewingScheduler[]
 
   @@map("users")
-}
-
-model Property {
-  id                 Int          @id @default(autoincrement())
-  title              String
-  description        String?
+  }
+  
+  model Builder {
+    id                    Int      @id @default(autoincrement())
+    name                  String
+    history               String
+    past_projects         Json     // Array of project objects with name, completion_date, location
+    delivery_track_record Json     // Object with completed_projects_count, on_time_delivery_rate, customer_satisfaction_rating
+    ratings               Decimal  @db.Decimal(3, 1)
+    financial_stability   Json     // Object with revenue, profit_margin, debt_ratio
+    awards                String[]
+    created_at            DateTime @default(now())
+    updated_at            DateTime @updatedAt
+  
+    // Relations
+    properties            Property[]
+  
+    @@map("builders")
+  }
+  
+  model Property {
+    id                 Int          @id @default(autoincrement())
+    slug               String?      @unique
+    title              String
+    description        String?
   property_type      PropertyType
   sub_type           String?
   listing_type       ListingType  @default(sale)
@@ -181,14 +247,23 @@ model Property {
   ownership_type     OwnershipType?
   possession_status  PossessionStatus?
   possession_date    DateTime?
+  builder_id         Int?
   developer_name     String?
   project_name       String?
   virtual_tour_url   String?
   video_tour_url     String?
+  drone_footage_url  String?
+  time_lapse_url     String?
   ai_score           Decimal?     @db.Decimal(5, 2)
   ai_prediction      Json?
   religious_significance String?
   infrastructure_impact Json?
+  floor_plan_url     String?
+  three_d_tour_url   String?
+  vastu_compliant    Boolean      @default(false)
+  orientation        String?
+  carpet_area        Decimal?     @db.Decimal(10, 2)
+  built_up_area      Decimal?     @db.Decimal(10, 2)
   status             PropertyStatus @default(active)
   featured           Boolean      @default(false)
   premium_listing    Boolean      @default(false)
@@ -197,16 +272,47 @@ model Property {
   created_by         Int?
   created_at         DateTime     @default(now())
   updated_at         DateTime     @updatedAt
+  gift_pack          Json?
+  highlight_types    String[]
+  price_drop_amount  Decimal?     @db.Decimal(15, 2)
+  is_new_launch      Boolean      @default(false)
+  units_left         Int?
+  last_updated_price DateTime?
 
   // Relations
-  location          Location?     @relation(fields: [location_id], references: [id])
-  creator           User?         @relation("CreatedBy", fields: [created_by], references: [id])
-  images            PropertyImage[]
-  analytics         Analytic[]
-  predictions       AiPrediction[]
-  inquiries         Inquiry[]
+    location           Location?            @relation(fields: [location_id], references: [id])
+    creator            User?                @relation("CreatedBy", fields: [created_by], references: [id])
+    builder            Builder?             @relation(fields: [builder_id], references: [id])
+    images             PropertyImage[]
+    analytics          Analytic[]
+    predictions        AiPrediction[]
+    inquiries          Inquiry[]
+    reraCompliance     ReraCompliance?
+    calls              Call[]
+    loan_applications  LoanApplication[]
+    saved_properties   SavedProperty[]
+    property_reviews   PropertyReview[]
+    forum_posts        CommunityForumPost[]
+    viewing_schedules  ViewingScheduler[]
 
   @@map("properties")
+}
+
+model ReraCompliance {
+  id                    Int                @id @default(autoincrement())
+  property_id           Int                @unique
+  registration_number   String
+  approval_status       ReraApprovalStatus
+  complaint_history     Json // Array of complaint objects with date, type, status
+  project_timeline      Json // Array of milestone objects with date, event, completed
+  approved_building_plans String[]
+  created_at            DateTime           @default(now())
+  updated_at            DateTime           @updatedAt
+
+  // Relations
+  property              Property           @relation(fields: [property_id], references: [id])
+
+  @@map("rera_compliance")
 }
 
 model Location {
@@ -232,6 +338,10 @@ model Location {
   smart_city_status    Boolean         @default(false)
   tier_classification  TierClassification?
   investment_potential Decimal?        @db.Decimal(3, 1)
+  amenities            Json?
+  connectivity_score   Json?
+  locality_highlights   Json?
+  essential_services    Json?
   created_at           DateTime        @default(now())
   updated_at           DateTime        @updatedAt
 
@@ -311,9 +421,9 @@ model UserSearch {
 model Inquiry {
   id            Int           @id @default(autoincrement())
   property_id   Int
-  user_id       Int
-  name          String
-  email         String
+  user_id       Int?
+  name          String?
+  email         String?
   phone         String?
   message       String
   inquiry_type  InquiryType   @default(general)
@@ -321,11 +431,13 @@ model Inquiry {
   response      String?
   responded_by  Int?
   responded_at  DateTime?
+  is_anonymous  Boolean       @default(false)
+  messages      Json?
   created_at    DateTime      @default(now())
 
   // Relations
   property      Property      @relation(fields: [property_id], references: [id])
-  user          User          @relation(fields: [user_id], references: [id])
+  user          User?         @relation(fields: [user_id], references: [id])
   responder     User?         @relation("RespondedBy", fields: [responded_by], references: [id])
 
   @@map("inquiries")
@@ -364,4 +476,158 @@ model Payment {
   user              User          @relation(fields: [user_id], references: [id])
 
   @@map("payments")
+}
+
+model Call {
+ id               Int         @id @default(autoincrement())
+ user_id          Int?
+ property_id      Int
+ agent_id         Int
+ call_type        CallType
+ status           CallStatus
+ duration_seconds Int?
+ recording_url    String?
+ scheduled_at     DateTime?
+ created_at       DateTime    @default(now())
+
+ // Relations
+ user             User?       @relation("UserCalls", fields: [user_id], references: [id])
+ property         Property    @relation(fields: [property_id], references: [id])
+ agent            User        @relation("AgentCalls", fields: [agent_id], references: [id])
+
+ @@map("calls")
+}
+
+model Bank {
+ id                  Int      @id @default(autoincrement())
+ name                String
+ interest_rates      Json
+ eligibility_criteria Json
+ logo_url            String
+ contact_info        Json
+ created_at          DateTime @default(now())
+ updated_at          DateTime @updatedAt
+
+ // Relations
+ loan_applications   LoanApplication[]
+
+ @@map("banks")
+}
+
+model LoanApplication {
+ id             Int         @id @default(autoincrement())
+ user_id        Int
+ property_id    Int?
+ bank_id        Int
+ loan_amount    Decimal     @db.Decimal(15, 2)
+ status         LoanStatus  @default(draft)
+ documents      Json        // array of document objects
+ created_at     DateTime    @default(now())
+ updated_at     DateTime    @updatedAt
+
+ // Relations
+ user           User        @relation(fields: [user_id], references: [id])
+ property       Property?   @relation(fields: [property_id], references: [id])
+ bank           Bank        @relation(fields: [bank_id], references: [id])
+
+ @@map("loan_applications")
+}
+
+model SavedProperty {
+ id          Int      @id @default(autoincrement())
+ user_id     Int
+ property_id Int
+ added_at    DateTime @default(now())
+ shared_with Int[]
+ is_public   Boolean  @default(false)
+
+ // Relations
+ user     User     @relation(fields: [user_id], references: [id])
+ property Property @relation(fields: [property_id], references: [id])
+
+ @@map("saved_properties")
+}
+
+model SavedSearch {
+ id               Int      @id @default(autoincrement())
+ user_id          Int
+ name             String
+ search_query     String?
+ filters          Json?
+ location_bounds  Json?
+ alert_enabled    Boolean  @default(false)
+ last_alert_sent  DateTime?
+ created_at       DateTime @default(now())
+ updated_at       DateTime @updatedAt
+
+ // Relations
+ user User @relation(fields: [user_id], references: [id])
+
+ @@map("saved_searches")
+}
+
+model PropertyReview {
+ id          Int     @id @default(autoincrement())
+ user_id     Int
+ property_id Int
+ rating      Int     // 1-5
+ review_text String?
+ created_at  DateTime @default(now())
+
+ // Relations
+ user     User     @relation(fields: [user_id], references: [id])
+ property Property @relation(fields: [property_id], references: [id])
+
+ @@map("property_reviews")
+}
+
+model CommunityForumPost {
+ id          Int      @id @default(autoincrement())
+ user_id     Int
+ property_id Int?
+ title       String
+ content     String
+ replies     Json?    // array of reply objects with user_id, content, created_at
+ created_at  DateTime @default(now())
+ updated_at  DateTime @updatedAt
+
+ // Relations
+ user     User      @relation(fields: [user_id], references: [id])
+ property Property? @relation(fields: [property_id], references: [id])
+
+ @@map("community_forum_posts")
+}
+
+model ViewingScheduler {
+ id          Int           @id @default(autoincrement())
+ user_id     Int
+ property_id Int
+ scheduled_at DateTime
+ status      ViewingStatus @default(scheduled)
+ notes       String?
+ created_at  DateTime      @default(now())
+ updated_at  DateTime      @updatedAt
+
+ // Relations
+ user     User     @relation(fields: [user_id], references: [id])
+ property Property @relation(fields: [property_id], references: [id])
+
+ @@map("viewing_schedules")
+}
+
+model Offer {
+ id          Int       @id @default(autoincrement())
+ title       String
+ description String?
+ image_url   String
+ link_url    String?
+ type        OfferType
+ is_active   Boolean   @default(true)
+ start_date  DateTime
+ end_date    DateTime?
+ priority    Int       @default(1)
+ created_at  DateTime  @default(now())
+ updated_at  DateTime  @updatedAt
+
+ @@map("offers")
 }

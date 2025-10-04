@@ -19,6 +19,7 @@ import type {
 } from '@prisma/client';
 
 export interface CreatePropertyData {
+  slug?: string;
   title: string;
   description?: string;
   propertyType: PropertyType;
@@ -55,6 +56,14 @@ export interface CreatePropertyData {
   projectName?: string;
   virtualTourUrl?: string;
   videoTourUrl?: string;
+  droneFootageUrl?: string;
+  timeLapseUrl?: string;
+  floorPlanUrl?: string;
+  threeDTourUrl?: string;
+  vastuCompliant?: boolean;
+  orientation?: string;
+  carpetArea?: number;
+  builtUpArea?: number;
   religiousSignificance?: string;
   infrastructureImpact?: object;
   featured?: boolean;
@@ -98,6 +107,14 @@ export interface UpdatePropertyData {
   projectName?: string;
   virtualTourUrl?: string;
   videoTourUrl?: string;
+  droneFootageUrl?: string;
+  timeLapseUrl?: string;
+  floorPlanUrl?: string;
+  threeDTourUrl?: string;
+  vastuCompliant?: boolean;
+  orientation?: string;
+  carpetArea?: number;
+  builtUpArea?: number;
   religiousSignificance?: string;
   infrastructureImpact?: object;
   featured?: boolean;
@@ -144,6 +161,7 @@ export class PropertyModel {
 
     return prisma.property.create({
       data: {
+        ...(data.slug && { slug: data.slug }),
         title: data.title,
         description: data.description,
         property_type: data.propertyType,
@@ -180,6 +198,14 @@ export class PropertyModel {
         project_name: data.projectName,
         virtual_tour_url: data.virtualTourUrl,
         video_tour_url: data.videoTourUrl,
+        drone_footage_url: data.droneFootageUrl,
+        time_lapse_url: data.timeLapseUrl,
+        floor_plan_url: data.floorPlanUrl,
+        three_d_tour_url: data.threeDTourUrl,
+        vastu_compliant: data.vastuCompliant,
+        orientation: data.orientation,
+        carpet_area: data.carpetArea,
+        built_up_area: data.builtUpArea,
         religious_significance: data.religiousSignificance,
         infrastructure_impact: data.infrastructureImpact,
         featured: data.featured,
@@ -209,6 +235,32 @@ export class PropertyModel {
           orderBy: { sort_order: 'asc' },
         },
         predictions: true,
+        reraCompliance: true,
+      },
+    });
+  }
+
+  // Find property by slug
+  static async findBySlug(slug: string): Promise<Property | null> {
+    return prisma.property.findUnique({
+      where: { slug },
+      include: {
+        location: true,
+        creator: {
+          select: {
+            id: true,
+            first_name: true,
+            last_name: true,
+            email: true,
+            phone: true,
+            avatar_url: true,
+          },
+        },
+        images: {
+          orderBy: { sort_order: 'asc' },
+        },
+        predictions: true,
+        reraCompliance: true,
       },
     });
   }
@@ -233,6 +285,7 @@ export class PropertyModel {
           orderBy: { sort_order: 'asc' },
         },
         predictions: true,
+        reraCompliance: true,
       },
     });
 
@@ -285,6 +338,14 @@ export class PropertyModel {
         ...(data.projectName !== undefined && { project_name: data.projectName }),
         ...(data.virtualTourUrl !== undefined && { virtual_tour_url: data.virtualTourUrl }),
         ...(data.videoTourUrl !== undefined && { video_tour_url: data.videoTourUrl }),
+        ...(data.droneFootageUrl !== undefined && { drone_footage_url: data.droneFootageUrl }),
+        ...(data.timeLapseUrl !== undefined && { time_lapse_url: data.timeLapseUrl }),
+        ...(data.floorPlanUrl !== undefined && { floor_plan_url: data.floorPlanUrl }),
+        ...(data.threeDTourUrl !== undefined && { three_d_tour_url: data.threeDTourUrl }),
+        ...(data.vastuCompliant !== undefined && { vastu_compliant: data.vastuCompliant }),
+        ...(data.orientation !== undefined && { orientation: data.orientation }),
+        ...(data.carpetArea !== undefined && { carpet_area: data.carpetArea }),
+        ...(data.builtUpArea !== undefined && { built_up_area: data.builtUpArea }),
         ...(data.religiousSignificance !== undefined && { religious_significance: data.religiousSignificance }),
         ...(data.infrastructureImpact !== undefined && { infrastructure_impact: data.infrastructureImpact }),
         ...(data.featured !== undefined && { featured: data.featured }),

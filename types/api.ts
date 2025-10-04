@@ -26,6 +26,8 @@ export interface PropertiesResponse {
 
 export interface SearchPropertiesResponse extends PropertiesResponse {
   searchQuery: string;
+  smartSuggestions?: any[];
+  parsedQuery?: any;
 }
 
 export interface PropertyFilters {

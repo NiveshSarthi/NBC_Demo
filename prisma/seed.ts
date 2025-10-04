@@ -257,6 +257,7 @@ const users = [
 const properties = [
   // Mumbai Properties
   {
+    slug: 'demo-sale-1',
     title: 'Luxury 3BHK Apartment in South Mumbai',
     description: 'Premium residential apartment with sea-facing views, modern amenities, and world-class facilities.',
     property_type: 'residential' as const,
@@ -337,6 +338,7 @@ const properties = [
   },
   // Delhi Properties
   {
+    slug: 'demo-sale-2',
     title: 'Spacious 4BHK Villa in Gurgaon',
     description: 'Independent villa with private garden, modern architecture, and premium location in DLF Phase 1.',
     property_type: 'residential' as const,
@@ -379,6 +381,7 @@ const properties = [
   },
   // Bangalore Properties
   {
+    slug: 'demo-sale-3',
     title: 'Modern 2BHK Apartment in Whitefield',
     description: 'Contemporary apartment in IT hub with proximity to major tech parks and excellent connectivity.',
     property_type: 'residential' as const,
@@ -421,6 +424,7 @@ const properties = [
   },
   // Chennai Properties
   {
+    slug: 'demo-sale-4',
     title: 'Beachfront 3BHK Apartment in ECR',
     description: 'Luxury beachfront property with stunning ocean views and world-class amenities.',
     property_type: 'residential' as const,
@@ -463,6 +467,7 @@ const properties = [
   },
   // Goa Properties (Rental)
   {
+    slug: 'demo-rent-1',
     title: 'Luxury Beach Villa for Rent in Calangute',
     description: 'Stunning beachfront villa available for monthly rental with modern amenities and panoramic ocean views.',
     property_type: 'residential' as const,
@@ -619,14 +624,832 @@ const marketReports = [
   }
 ];
 
+// Sample Builders data
+const builders = [
+  {
+    name: 'DLF Limited',
+    history: 'Founded in 1946, DLF is one of India\'s largest real estate developers with over 60 years of experience. Started as a trading company and transitioned to real estate in the 1970s.',
+    past_projects: [
+      { name: 'DLF Cyber City', completion_date: '2005-01-01', location: 'Gurgaon' },
+      { name: 'DLF Mall of India', completion_date: '2016-03-15', location: 'Noida' },
+      { name: 'DLF Emporio', completion_date: '2018-09-20', location: 'Mumbai' },
+      { name: 'DLF The Crest', completion_date: '2020-06-10', location: 'Delhi' }
+    ],
+    delivery_track_record: {
+      completed_projects_count: 285,
+      on_time_delivery_rate: 94.5,
+      customer_satisfaction_rating: 4.2
+    },
+    ratings: 4.3,
+    financial_stability: {
+      revenue: 4500000000,
+      profit_margin: 18.5,
+      debt_ratio: 0.45
+    },
+    awards: ['CREDAI Award 2023', 'Best Developer Award 2022', 'Green Building Excellence Award'],
+    created_at: new Date('2024-01-01T00:00:00Z'),
+    updated_at: new Date('2024-01-01T00:00:00Z')
+  },
+  {
+    name: 'Prestige Group',
+    history: 'Established in 1986, Prestige Group is a Bengaluru-based conglomerate with interests in real estate, infrastructure, and hospitality.',
+    past_projects: [
+      { name: 'Prestige Falcon City', completion_date: '2012-07-15', location: 'Bangalore' },
+      { name: 'Prestige Shantiniketan', completion_date: '2018-11-30', location: 'Bangalore' },
+      { name: 'Prestige City', completion_date: '2021-04-22', location: 'Hyderabad' },
+      { name: 'Prestige Lakeside Habitat', completion_date: '2019-12-15', location: 'Chennai' }
+    ],
+    delivery_track_record: {
+      completed_projects_count: 198,
+      on_time_delivery_rate: 92.8,
+      customer_satisfaction_rating: 4.1
+    },
+    ratings: 4.4,
+    financial_stability: {
+      revenue: 3200000000,
+      profit_margin: 22.3,
+      debt_ratio: 0.38
+    },
+    awards: ['ET Now Real Estate Award 2023', 'CNBC Awaaz Real Estate Award 2022', 'IGBC Green Building Award'],
+    created_at: new Date('2024-01-01T00:00:00Z'),
+    updated_at: new Date('2024-01-01T00:00:00Z')
+  },
+  {
+    name: 'Godrej Properties',
+    history: 'Part of the Godrej Group founded in 1897, Godrej Properties entered real estate development in 1990 and has become a major player in the residential sector.',
+    past_projects: [
+      { name: 'Godrej Platinum', completion_date: '2014-08-20', location: 'Mumbai' },
+      { name: 'Godrej Woods', completion_date: '2017-03-10', location: 'Bangalore' },
+      { name: 'Godrej One', completion_date: '2020-01-15', location: 'Mumbai' },
+      { name: 'Godrej City', completion_date: '2022-11-25', location: 'Ahmedabad' }
+    ],
+    delivery_track_record: {
+      completed_projects_count: 156,
+      on_time_delivery_rate: 96.2,
+      customer_satisfaction_rating: 4.3
+    },
+    ratings: 4.5,
+    financial_stability: {
+      revenue: 2800000000,
+      profit_margin: 25.1,
+      debt_ratio: 0.32
+    },
+    awards: ['Best Residential Developer 2023', 'Green Rating for Integrated Habitat Assessment', 'CREDAI Excellence Award'],
+    created_at: new Date('2024-01-01T00:00:00Z'),
+    updated_at: new Date('2024-01-01T00:00:00Z')
+  },
+  {
+    name: 'Lodha Group',
+    history: 'Founded in 1980 by Mangal Prabhat Lodha, the group has developed over 45 million sq ft of real estate across India.',
+    past_projects: [
+      { name: 'Lodha Fiorenza', completion_date: '2016-12-05', location: 'Mumbai' },
+      { name: 'Lodha Park', completion_date: '2019-07-30', location: 'Mumbai' },
+      { name: 'Lodha Bellagio', completion_date: '2021-09-18', location: 'Mumbai' },
+      { name: 'Lodha Evoq', completion_date: '2023-02-14', location: 'Mumbai' }
+    ],
+    delivery_track_record: {
+      completed_projects_count: 234,
+      on_time_delivery_rate: 91.7,
+      customer_satisfaction_rating: 4.0
+    },
+    ratings: 4.2,
+    financial_stability: {
+      revenue: 3800000000,
+      profit_margin: 19.8,
+      debt_ratio: 0.42
+    },
+    awards: ['MCHI Excellence Award 2022', 'IGBC Platinum Rating', 'CNBC Awaaz Real Estate Award'],
+    created_at: new Date('2024-01-01T00:00:00Z'),
+    updated_at: new Date('2024-01-01T00:00:00Z')
+  },
+  {
+    name: 'Casagrand',
+    history: 'Established in 2000, Casagrand has grown to become one of South India\'s leading real estate developers with a focus on affordable and mid-segment housing.',
+    past_projects: [
+      { name: 'Casagrand ECR', completion_date: '2019-06-25', location: 'Chennai' },
+      { name: 'Casagrand Zenith', completion_date: '2021-11-10', location: 'Bangalore' },
+      { name: 'Casagrand Palm Springs', completion_date: '2020-08-30', location: 'Chennai' },
+      { name: 'Casagrand Valencia', completion_date: '2022-04-18', location: 'Coimbatore' }
+    ],
+    delivery_track_record: {
+      completed_projects_count: 89,
+      on_time_delivery_rate: 95.3,
+      customer_satisfaction_rating: 4.4
+    },
+    ratings: 4.6,
+    financial_stability: {
+      revenue: 1500000000,
+      profit_margin: 28.7,
+      debt_ratio: 0.25
+    },
+    awards: ['Best Affordable Housing Developer 2023', 'Green Building Excellence', 'Customer Choice Award'],
+    created_at: new Date('2024-01-01T00:00:00Z'),
+    updated_at: new Date('2024-01-01T00:00:00Z')
+  },
+  {
+    name: 'Raheja Developers',
+    history: 'Part of the K Raheja Corp, Raheja Developers has been in the real estate business since 1956 and is known for commercial and residential projects.',
+    past_projects: [
+      { name: 'Raheja Revanta', completion_date: '2018-10-12', location: 'Mumbai' },
+      { name: 'Raheja Imperia', completion_date: '2020-05-08', location: 'Gurgaon' },
+      { name: 'Raheja Atlantis', completion_date: '2017-03-22', location: 'Mumbai' },
+      { name: 'Raheja Exotica', completion_date: '2022-08-15', location: 'Mumbai' }
+    ],
+    delivery_track_record: {
+      completed_projects_count: 145,
+      on_time_delivery_rate: 93.1,
+      customer_satisfaction_rating: 4.1
+    },
+    ratings: 4.3,
+    financial_stability: {
+      revenue: 2200000000,
+      profit_margin: 21.4,
+      debt_ratio: 0.41
+    },
+    awards: ['CREDAI Award for Excellence', 'Best Commercial Developer 2022', 'Sustainability Award'],
+    created_at: new Date('2024-01-01T00:00:00Z'),
+    updated_at: new Date('2024-01-01T00:00:00Z')
+  }
+];
+
+// Sample Offers data
+const offers = [
+  {
+    title: 'Diwali Festive Offer',
+    description: 'Special Diwali discount of up to 10% on select residential properties. Limited time offer valid till Diwali.',
+    image_url: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=1200&q=80',
+    link_url: '/offers/diwali-festive',
+    type: 'festival' as const,
+    is_active: true,
+    start_date: new Date('2024-10-25T00:00:00Z'),
+    end_date: new Date('2024-11-15T23:59:59Z'),
+    priority: 10,
+    created_at: new Date('2024-10-20T00:00:00Z'),
+    updated_at: new Date('2024-10-20T00:00:00Z')
+  },
+  {
+    title: 'Demo Banner - Special Launch Offer',
+    description: 'Exclusive launch offer for demo properties. Get amazing deals on premium locations with developer discounts.',
+    image_url: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1200&q=80',
+    link_url: '/properties?featured=true',
+    type: 'seasonal' as const,
+    is_active: true,
+    start_date: new Date('2024-01-01T00:00:00Z'),
+    end_date: new Date('2024-12-31T23:59:59Z'),
+    priority: 9,
+    created_at: new Date('2024-01-01T00:00:00Z'),
+    updated_at: new Date('2024-01-01T00:00:00Z')
+  },
+  {
+    title: 'Early Bird Discount',
+    description: 'Book your dream home early and get up to 5% discount on new launches. Valid for first 50 bookings.',
+    image_url: 'https://example.com/offers/early-bird.jpg',
+    link_url: '/offers/early-bird',
+    type: 'limited_time' as const,
+    is_active: true,
+    start_date: new Date('2024-01-01T00:00:00Z'),
+    end_date: new Date('2024-12-31T23:59:59Z'),
+    priority: 8,
+    created_at: new Date('2024-01-01T00:00:00Z'),
+    updated_at: new Date('2024-01-01T00:00:00Z')
+  },
+  {
+    title: 'First-Time Homebuyer Special',
+    description: 'Special assistance for first-time buyers including stamp duty exemption and subsidized interest rates.',
+    image_url: 'https://example.com/offers/first-time-buyer.jpg',
+    link_url: '/offers/first-time-buyer',
+    type: 'seasonal' as const,
+    is_active: true,
+    start_date: new Date('2024-04-01T00:00:00Z'),
+    end_date: new Date('2024-09-30T23:59:59Z'),
+    priority: 9,
+    created_at: new Date('2024-04-01T00:00:00Z'),
+    updated_at: new Date('2024-04-01T00:00:00Z')
+  },
+  {
+    title: 'DLF Builder Offer',
+    description: 'Exclusive offer from DLF - Free modular kitchen worth ₹5 lakhs on select apartments in Phase 1.',
+    image_url: 'https://example.com/offers/dlf-builder-offer.jpg',
+    link_url: '/offers/dlf-builder-offer',
+    type: 'builder' as const,
+    is_active: true,
+    start_date: new Date('2024-06-01T00:00:00Z'),
+    end_date: new Date('2024-12-31T23:59:59Z'),
+    priority: 7,
+    created_at: new Date('2024-06-01T00:00:00Z'),
+    updated_at: new Date('2024-06-01T00:00:00Z')
+  },
+  {
+    title: 'Monsoon Maintenance Package',
+    description: 'Get a comprehensive home maintenance package worth ₹50,000 absolutely free with any property booking.',
+    image_url: 'https://example.com/offers/monsoon-maintenance.jpg',
+    link_url: '/offers/monsoon-maintenance',
+    type: 'seasonal' as const,
+    is_active: true,
+    start_date: new Date('2024-06-15T00:00:00Z'),
+    end_date: new Date('2024-09-15T23:59:59Z'),
+    priority: 6,
+    created_at: new Date('2024-06-15T00:00:00Z'),
+    updated_at: new Date('2024-06-15T00:00:00Z')
+  }
+];
+
+// Sample Banks data
+const banks = [
+  {
+    name: 'State Bank of India',
+    interest_rates: {
+      home_loan: { min: 6.65, max: 7.05 },
+      personal_loan: { min: 10.55, max: 13.55 },
+      construction_loan: { min: 6.75, max: 7.15 }
+    },
+    eligibility_criteria: {
+      min_income: 300000,
+      min_credit_score: 650,
+      max_age: 70,
+      employment_types: ['salaried', 'self-employed']
+    },
+    logo_url: 'https://example.com/banks/sbi-logo.png',
+    contact_info: {
+      website: 'https://www.sbi.co.in',
+      toll_free: '1800-1234',
+      email: 'customercare@sbi.co.in'
+    },
+    created_at: new Date('2024-01-01T00:00:00Z'),
+    updated_at: new Date('2024-01-01T00:00:00Z')
+  },
+  {
+    name: 'HDFC Bank',
+    interest_rates: {
+      home_loan: { min: 6.70, max: 7.15 },
+      personal_loan: { min: 10.75, max: 14.00 },
+      construction_loan: { min: 6.80, max: 7.25 }
+    },
+    eligibility_criteria: {
+      min_income: 250000,
+      min_credit_score: 650,
+      max_age: 65,
+      employment_types: ['salaried', 'self-employed']
+    },
+    logo_url: 'https://example.com/banks/hdfc-logo.png',
+    contact_info: {
+      website: 'https://www.hdfcbank.com',
+      toll_free: '1800-567-6789',
+      email: 'customercare@hdfcbank.com'
+    },
+    created_at: new Date('2024-01-01T00:00:00Z'),
+    updated_at: new Date('2024-01-01T00:00:00Z')
+  },
+  {
+    name: 'ICICI Bank',
+    interest_rates: {
+      home_loan: { min: 6.75, max: 7.20 },
+      personal_loan: { min: 10.50, max: 13.75 },
+      construction_loan: { min: 6.85, max: 7.30 }
+    },
+    eligibility_criteria: {
+      min_income: 300000,
+      min_credit_score: 650,
+      max_age: 70,
+      employment_types: ['salaried', 'self-employed']
+    },
+    logo_url: 'https://example.com/banks/icici-logo.png',
+    contact_info: {
+      website: 'https://www.icicibank.com',
+      toll_free: '1800-103-8181',
+      email: 'customercare@icicibank.com'
+    },
+    created_at: new Date('2024-01-01T00:00:00Z'),
+    updated_at: new Date('2024-01-01T00:00:00Z')
+  },
+  {
+    name: 'Axis Bank',
+    interest_rates: {
+      home_loan: { min: 6.75, max: 7.25 },
+      personal_loan: { min: 10.49, max: 13.99 },
+      construction_loan: { min: 6.85, max: 7.35 }
+    },
+    eligibility_criteria: {
+      min_income: 250000,
+      min_credit_score: 650,
+      max_age: 65,
+      employment_types: ['salaried', 'self-employed']
+    },
+    logo_url: 'https://example.com/banks/axis-logo.png',
+    contact_info: {
+      website: 'https://www.axisbank.com',
+      toll_free: '1800-209-5577',
+      email: 'customercare@axisbank.com'
+    },
+    created_at: new Date('2024-01-01T00:00:00Z'),
+    updated_at: new Date('2024-01-01T00:00:00Z')
+  },
+  {
+    name: 'Kotak Mahindra Bank',
+    interest_rates: {
+      home_loan: { min: 6.60, max: 7.10 },
+      personal_loan: { min: 10.25, max: 15.00 },
+      construction_loan: { min: 6.70, max: 7.20 }
+    },
+    eligibility_criteria: {
+      min_income: 300000,
+      min_credit_score: 650,
+      max_age: 70,
+      employment_types: ['salaried', 'self-employed']
+    },
+    logo_url: 'https://example.com/banks/kotak-logo.png',
+    contact_info: {
+      website: 'https://www.kotak.com',
+      toll_free: '1860-266-2666',
+      email: 'care@kotak.com'
+    },
+    created_at: new Date('2024-01-01T00:00:00Z'),
+    updated_at: new Date('2024-01-01T00:00:00Z')
+  }
+];
+
+// Enhanced locations with amenities, connectivity, etc.
+const enhancedLocations = [
+  {
+    ...locations[0], // Mumbai
+    amenities: {
+      shopping: ['Crawford Market', 'Phoenix Mall', 'Leisure World'],
+      healthcare: ['Lilavati Hospital', 'Kokilaben Hospital', 'Jaslok Hospital'],
+      education: ['IIT Bombay', 'St. Xavier\'s College', 'JB Petit High School'],
+      entertainment: ['Marine Drive Promenade', 'Gateway of India', 'Juhu Beach']
+    },
+    connectivity_score: {
+      road: 9.5,
+      rail: 9.8,
+      air: 10.0,
+      public_transport: 9.2,
+      overall: 9.6
+    },
+    locality_highlights: [
+      'One of India\'s financial capitals',
+      'Home to Bollywood industry',
+      'Rich colonial architecture',
+      'Diverse cultural heritage',
+      'World-class healthcare facilities'
+    ],
+    essential_services: {
+      electricity: { availability: 99.8, reliability: 'excellent' },
+      water: { availability: 98.5, quality: 'good' },
+      sewage: { coverage: 95.2, treatment: 'advanced' },
+      waste_management: { collection: 97.1, recycling: 'moderate' },
+      internet: { speed: '100-500 Mbps', coverage: 98.5 }
+    }
+  },
+  {
+    ...locations[1], // Delhi
+    amenities: {
+      shopping: ['Connaught Place', 'Select Citywalk', 'DLF Mall'],
+      healthcare: ['All India Institute of Medical Sciences', 'Apollo Hospital', 'Max Hospital'],
+      education: ['Delhi University', 'Jawaharlal Nehru University', 'St. Stephen\'s College'],
+      entertainment: ['Red Fort', 'India Gate', 'Lotus Temple']
+    },
+    connectivity_score: {
+      road: 8.8,
+      rail: 9.5,
+      air: 10.0,
+      public_transport: 8.5,
+      overall: 9.2
+    },
+    locality_highlights: [
+      'Political capital of India',
+      'Rich historical monuments',
+      'Cultural diversity',
+      'Growing IT sector',
+      'Excellent educational institutions'
+    ],
+    essential_services: {
+      electricity: { availability: 99.5, reliability: 'good' },
+      water: { availability: 97.2, quality: 'moderate' },
+      sewage: { coverage: 92.8, treatment: 'good' },
+      waste_management: { collection: 94.5, recycling: 'moderate' },
+      internet: { speed: '50-300 Mbps', coverage: 96.8 }
+    }
+  },
+  {
+    ...locations[2], // Bangalore
+    amenities: {
+      shopping: ['UB City', 'Forum Mall', 'Brigade Road'],
+      healthcare: ['Manipal Hospital', 'Apollo Hospital', 'Fortis Hospital'],
+      education: ['IIT Bangalore', 'IISc', 'National Law School'],
+      entertainment: ['Lalbagh Botanical Garden', 'Cubbon Park', 'Bangalore Palace']
+    },
+    connectivity_score: {
+      road: 8.5,
+      rail: 8.2,
+      air: 9.8,
+      public_transport: 8.8,
+      overall: 8.8
+    },
+    locality_highlights: [
+      'Silicon Valley of India',
+      'Pleasant climate year-round',
+      'Growing startup ecosystem',
+      'Educational hub',
+      'Tech innovation center'
+    ],
+    essential_services: {
+      electricity: { availability: 99.2, reliability: 'excellent' },
+      water: { availability: 98.1, quality: 'good' },
+      sewage: { coverage: 94.7, treatment: 'advanced' },
+      waste_management: { collection: 96.3, recycling: 'good' },
+      internet: { speed: '100-1000 Mbps', coverage: 97.9 }
+    }
+  },
+  {
+    ...locations[3], // Chennai
+    amenities: {
+      shopping: ['Express Avenue', 'Forum Vijaya Mall', 'T. Nagar'],
+      healthcare: ['Apollo Hospital', 'Global Hospital', 'MIOT International'],
+      education: ['IIT Madras', 'Anna University', 'Loyola College'],
+      entertainment: ['Marina Beach', 'Kapaleeshwarar Temple', 'Valluvar Kottam']
+    },
+    connectivity_score: {
+      road: 8.2,
+      rail: 8.8,
+      air: 9.5,
+      public_transport: 8.0,
+      overall: 8.6
+    },
+    locality_highlights: [
+      'Cultural capital of South India',
+      'Longest urban beach in the world',
+      'Automotive industry hub',
+      'Rich Tamil heritage',
+      'Growing IT sector'
+    ],
+    essential_services: {
+      electricity: { availability: 98.8, reliability: 'good' },
+      water: { availability: 96.5, quality: 'moderate' },
+      sewage: { coverage: 91.2, treatment: 'moderate' },
+      waste_management: { collection: 93.7, recycling: 'moderate' },
+      internet: { speed: '50-300 Mbps', coverage: 95.4 }
+    }
+  },
+  {
+    ...locations[4], // Hyderabad
+    amenities: {
+      shopping: ['GVK One Mall', 'Inorbit Mall', 'Banjara Hills'],
+      healthcare: ['Apollo Hospital', 'Care Hospital', 'Yashoda Hospital'],
+      education: ['IIT Hyderabad', 'IIIT Hyderabad', 'Osmania University'],
+      entertainment: ['Charminar', 'Golconda Fort', 'Hussain Sagar Lake']
+    },
+    connectivity_score: {
+      road: 8.7,
+      rail: 8.5,
+      air: 9.7,
+      public_transport: 8.3,
+      overall: 8.8
+    },
+    locality_highlights: [
+      'Pearl City of India',
+      'IT and pharma hub',
+      'Rich Nizam heritage',
+      'Growing startup ecosystem',
+      'Famous for biryani and pearls'
+    ],
+    essential_services: {
+      electricity: { availability: 99.0, reliability: 'excellent' },
+      water: { availability: 97.8, quality: 'good' },
+      sewage: { coverage: 93.5, treatment: 'good' },
+      waste_management: { collection: 95.1, recycling: 'moderate' },
+      internet: { speed: '50-500 Mbps', coverage: 97.2 }
+    }
+  }
+];
+
 async function seedLocations() {
   console.log('Seeding locations...');
-  for (const location of locations) {
+
+  // First, try to update existing locations with enhanced data
+  for (const enhancedLoc of enhancedLocations) {
     try {
-      await prisma.location.create({ data: location });
-      console.log(`✓ Created location: ${location.name}`);
+      const existing = await prisma.location.findFirst({
+        where: { name: enhancedLoc.name }
+      });
+
+      if (existing) {
+        await prisma.location.update({
+          where: { id: existing.id },
+          data: {
+            amenities: enhancedLoc.amenities,
+            connectivity_score: enhancedLoc.connectivity_score,
+            locality_highlights: enhancedLoc.locality_highlights,
+            essential_services: enhancedLoc.essential_services
+          }
+        });
+        console.log(`✓ Updated location: ${enhancedLoc.name}`);
+      } else {
+        await prisma.location.create({ data: enhancedLoc });
+        console.log(`✓ Created location: ${enhancedLoc.name}`);
+      }
     } catch (error) {
-      console.log(`- Location ${location.name} already exists, skipping...`);
+      console.log(`- Error with location ${enhancedLoc.name}: ${(error as Error).message}`);
+    }
+  }
+}
+
+async function seedBuilders() {
+  console.log('Seeding builders...');
+  for (const builder of builders) {
+    try {
+      await prisma.builder.create({ data: builder });
+      console.log(`✓ Created builder: ${builder.name}`);
+    } catch (error) {
+      console.log(`- Builder ${builder.name} already exists, skipping...`);
+    }
+  }
+}
+
+async function seedOffers() {
+  console.log('Seeding offers...');
+  for (const offer of offers) {
+    try {
+      await prisma.offer.create({ data: offer });
+      console.log(`✓ Created offer: ${offer.title}`);
+    } catch (error) {
+      console.log(`- Offer ${offer.title} already exists, skipping...`);
+    }
+  }
+}
+
+async function seedBanks() {
+  console.log('Seeding banks...');
+  for (const bank of banks) {
+    try {
+      await prisma.bank.create({ data: bank });
+      console.log(`✓ Created bank: ${bank.name}`);
+    } catch (error) {
+      console.log(`- Bank ${bank.name} already exists, skipping...`);
+    }
+  }
+}
+
+async function seedReraCompliances() {
+  console.log('Seeding RERA compliances...');
+
+  const properties = await prisma.property.findMany({
+    where: { rera_registered: true },
+    select: { id: true, title: true, rera_number: true }
+  });
+
+  for (const property of properties) {
+    try {
+      const compliance = {
+        property_id: property.id,
+        registration_number: property.rera_number || `RERA${property.id}`,
+        approval_status: 'approved' as const,
+        complaint_history: [
+          {
+            date: new Date(Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+            type: 'delay_in_possession',
+            status: 'resolved'
+          }
+        ],
+        project_timeline: [
+          {
+            date: new Date(2023, 0, 15).toISOString().split('T')[0],
+            event: 'Project Launch',
+            completed: true
+          },
+          {
+            date: new Date(2023, 3, 1).toISOString().split('T')[0],
+            event: 'Foundation Work',
+            completed: true
+          },
+          {
+            date: new Date(2024, 6, 1).toISOString().split('T')[0],
+            event: 'Structural Completion',
+            completed: true
+          },
+          {
+            date: new Date(2024, 11, 15).toISOString().split('T')[0],
+            event: 'Possession Date',
+            completed: false
+          }
+        ],
+        approved_building_plans: [
+          'Floor Plan Approval',
+          'Structural Design Approval',
+          'Electrical Layout Approval',
+          'Plumbing Layout Approval'
+        ]
+      };
+
+      await prisma.reraCompliance.create({ data: compliance });
+      console.log(`✓ Created RERA compliance for: ${property.title}`);
+    } catch (error) {
+      console.log(`- RERA compliance for ${property.title} already exists, skipping...`);
+    }
+  }
+}
+
+async function seedLoanApplications() {
+  console.log('Seeding loan applications...');
+
+  const users = await prisma.user.findMany({ select: { id: true, email: true } });
+  const properties = await prisma.property.findMany({ select: { id: true, title: true, price: true } });
+  const banksList = await prisma.bank.findMany({ select: { id: true, name: true } });
+
+  console.log(`Found ${users.length} users, ${properties.length} properties, ${banksList.length} banks`);
+
+  if (users.length === 0 || properties.length === 0 || banksList.length === 0) {
+    console.log('Required data not found, skipping loan application seeding');
+    return;
+  }
+
+  for (let i = 0; i < Math.min(10, users.length * properties.length * banksList.length); i++) {
+    const user = users[Math.floor(Math.random() * users.length)];
+    const property = properties[Math.floor(Math.random() * properties.length)];
+    const bank = banksList[Math.floor(Math.random() * banksList.length)];
+
+    try {
+      const loanAmount = property.price ? Math.min(Number(property.price) * 0.8, 50000000) : 20000000;
+      const documents = [
+        { type: 'aadhar_card', status: 'verified', url: 'https://example.com/docs/aadhar.pdf' },
+        { type: 'pan_card', status: 'verified', url: 'https://example.com/docs/pan.pdf' },
+        { type: 'salary_slip', status: 'pending', url: 'https://example.com/docs/salary.pdf' },
+        { type: 'bank_statement', status: 'verified', url: 'https://example.com/docs/bank-statement.pdf' }
+      ];
+
+      await prisma.loanApplication.create({
+        data: {
+          user_id: user.id,
+          property_id: property.id,
+          bank_id: bank.id,
+          loan_amount: loanAmount,
+          status: 'draft' as const,
+          documents
+        }
+      });
+      console.log(`✓ Created loan application for user: ${user.email}`);
+    } catch (error) {
+      console.log(`- Loan application already exists for user ${user.email}, skipping...`);
+    }
+  }
+}
+
+async function seedSavedSearches() {
+  console.log('Seeding saved searches...');
+
+  const users = await prisma.user.findMany({ select: { id: true, first_name: true } });
+
+  if (users.length === 0) {
+    console.log('No users found, skipping saved searches seeding');
+    return;
+  }
+
+  for (const user of users.slice(0, 3)) { // Limit to first 3 users
+    for (let i = 0; i < 2; i++) {
+      try {
+        const savedSearch = {
+          user_id: user.id,
+          name: `Search ${i + 1}`,
+          search_query: `Residential properties in ${['Mumbai', 'Delhi', 'Bangalore'][Math.floor(Math.random() * 3)]}`,
+          filters: {
+            property_type: ['residential', 'commercial'][Math.floor(Math.random() * 2)],
+            max_price: [5000000, 10000000, 20000000][Math.floor(Math.random() * 3)],
+            bedrooms: [2, 3, 4][Math.floor(Math.random() * 3)]
+          },
+          location_bounds: {
+            north: 19.0760 + Math.random() * 0.1,
+            south: 19.0760 - Math.random() * 0.1,
+            east: 72.8777 + Math.random() * 0.1,
+            west: 72.8777 - Math.random() * 0.1
+          },
+          alert_enabled: Math.random() > 0.5
+        };
+
+        await prisma.savedSearch.create({ data: savedSearch });
+        console.log(`✓ Created saved search for user: ${user.first_name || 'User'}`);
+      } catch (error) {
+        console.log(`- Saved search already exists, skipping...`);
+      }
+    }
+  }
+}
+
+async function seedPropertyReviews() {
+  console.log('Seeding property reviews...');
+
+  const users = await prisma.user.findMany({ select: { id: true, first_name: true } });
+  const properties = await prisma.property.findMany({ select: { id: true, title: true } });
+
+  if (users.length === 0 || properties.length === 0) {
+    console.log('Required data not found, skipping property reviews seeding');
+    return;
+  }
+
+  for (const property of properties.slice(0, Math.min(5, properties.length))) {
+    for (let i = 0; i < 2; i++) {
+      const user = users[Math.floor(Math.random() * users.length)];
+
+      try {
+        const review = {
+          user_id: user.id,
+          property_id: property.id,
+          rating: Math.floor(Math.random() * 3) + 3, // 3-5 rating
+          review_text: [
+            'Excellent property with great amenities and location.',
+            'Good value for money, well-maintained building.',
+            'Nice neighborhood with all essential services nearby.',
+            'Modern construction with quality finishes.',
+            'Peaceful locality with easy access to transportation.'
+          ][Math.floor(Math.random() * 5)]
+        };
+
+        await prisma.propertyReview.create({ data: review });
+        console.log(`✓ Created review for property: ${property.title}`);
+      } catch (error) {
+        console.log(`- Review already exists, skipping...`);
+      }
+    }
+  }
+}
+
+async function seedCommunityForumPosts() {
+  console.log('Seeding community forum posts...');
+
+  const users = await prisma.user.findMany({ select: { id: true, first_name: true } });
+  const properties = await prisma.property.findMany({ select: { id: true, title: true } });
+
+  for (let i = 0; i < 15; i++) {
+    const user = users[Math.floor(Math.random() * users.length)];
+    const property = i % 3 === 0 ? properties[Math.floor(Math.random() * properties.length)] : null;
+
+    try {
+      const post = {
+        user_id: user.id,
+        property_id: property?.id || null,
+        title: [
+          'Best schools in the locality?',
+          'Parking availability in the building',
+          'Recent developments in the area',
+          'Maintenance charges and amenities',
+          'Connectivity to metro station',
+          'Nearby hospitals and medical facilities',
+          'Shopping options within 5km',
+          'Property appreciation potential',
+          'Builder reputation and past projects',
+          'Resale value analysis'
+        ][Math.floor(Math.random() * 10)],
+        content: [
+          'Hi everyone, I\'m considering buying a property here. Can someone share information about the schools in this locality?',
+          'Does anyone know about the parking situation? Is there adequate parking for residents and guests?',
+          'Are there any upcoming infrastructure projects in this area that might affect property values?',
+          'What are the monthly maintenance charges? Are there any hidden costs I should be aware of?',
+          'How is the connectivity to the nearest metro station? Any issues with traffic or transportation?'
+        ][Math.floor(Math.random() * 5)],
+        replies: [
+          {
+            user_id: users[Math.floor(Math.random() * users.length)].id,
+            content: 'Great question! Let me share my experience...',
+            created_at: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString()
+          }
+        ]
+      };
+
+      await prisma.communityForumPost.create({ data: post });
+      console.log(`✓ Created forum post: ${post.title}`);
+    } catch (error) {
+      console.log(`- Forum post already exists, skipping...`);
+    }
+  }
+}
+
+async function seedViewingSchedulers() {
+  console.log('Seeding viewing schedulers...');
+
+  const users = await prisma.user.findMany({ select: { id: true, first_name: true } });
+  const properties = await prisma.property.findMany({ select: { id: true, title: true } });
+
+  if (users.length === 0 || properties.length === 0) {
+    console.log('Required data not found, skipping viewing schedulers seeding');
+    return;
+  }
+
+  for (let i = 0; i < Math.min(12, users.length * properties.length); i++) {
+    const user = users[Math.floor(Math.random() * users.length)];
+    const property = properties[Math.floor(Math.random() * properties.length)];
+
+    try {
+      const scheduledAt = new Date(Date.now() + Math.random() * 30 * 24 * 60 * 60 * 1000); // Next 30 days
+      const viewing = {
+        user_id: user.id,
+        property_id: property.id,
+        scheduled_at: scheduledAt,
+        status: 'scheduled' as const,
+        notes: Math.random() > 0.5 ? 'Interested in 3BHK units on higher floors' : null
+      };
+
+      await prisma.viewingScheduler.create({ data: viewing });
+      console.log(`✓ Created viewing schedule for user: ${user.first_name || 'User'}`);
+    } catch (error) {
+      console.log(`- Viewing schedule already exists, skipping...`);
     }
   }
 }
@@ -796,11 +1619,38 @@ async function main() {
     await seedUsers();
     console.log('');
 
+    await seedBuilders();
+    console.log('');
+
+    await seedOffers();
+    console.log('');
+
+    await seedBanks();
+    console.log('');
+
     await seedProperties();
     console.log('');
 
-    await seedMongoDBContent();
+    await seedReraCompliances();
     console.log('');
+
+    await seedLoanApplications();
+    console.log('');
+
+    await seedSavedSearches();
+    console.log('');
+
+    await seedPropertyReviews();
+    console.log('');
+
+    await seedCommunityForumPosts();
+    console.log('');
+
+    await seedViewingSchedulers();
+    console.log('');
+
+    // await seedMongoDBContent();
+    // console.log('');
 
     console.log('✅ Database seeding completed successfully!');
   } catch (error) {

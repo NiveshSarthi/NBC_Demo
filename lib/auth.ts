@@ -117,8 +117,8 @@ export const searchPropertySchema = z.object({
 
 export const createInquirySchema = z.object({
   propertyId: z.number(),
-  name: z.string().min(1),
-  email: z.string().email(),
+  name: z.string().min(1).optional(),
+  email: z.string().email().optional(),
   phone: z.string().optional(),
   message: z.string().min(1),
   inquiryType: z.enum(['general', 'price', 'availability', 'visit']).default('general'),

@@ -92,6 +92,8 @@ export function useSearchProperties(query: string, filters?: PropertyFilters, pa
     properties: data?.properties || [],
     pagination: data?.pagination || { page: 1, limit: 20, total: 0, totalPages: 0 },
     searchQuery: data?.searchQuery,
+    smartSuggestions: data?.smartSuggestions || [],
+    parsedQuery: data?.parsedQuery,
     isLoading,
     error,
     mutate,

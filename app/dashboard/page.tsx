@@ -48,6 +48,22 @@ interface SavedProperty {
   images: Array<{ image_url: string }>;
 }
 
+interface SavedSearch {
+  id: number;
+  name: string;
+  alert_enabled: boolean;
+  created_at: string;
+}
+
+interface ViewingSchedule {
+  id: number;
+  property: {
+    title: string;
+  };
+  scheduled_at: string;
+  status: string;
+}
+
 interface DashboardData {
   user: {
     id: string;
@@ -61,6 +77,8 @@ interface DashboardData {
   stats: DashboardStats;
   activities: Activity[];
   savedProperties: SavedProperty[];
+  savedSearches: SavedSearch[];
+  viewings: ViewingSchedule[];
 }
 
 export default function DashboardPage() {
@@ -87,11 +105,13 @@ export default function DashboardPage() {
       setError(null);
 
       // Fetch all data in parallel
-      const [profileData, statsData, activityData, savedPropertiesData] = await Promise.all([
+      const [profileData, statsData, activityData, savedPropertiesData, savedSearchesData, viewingsData] = await Promise.all([
         userApi.getProfile(),
         userApi.getDashboardStats(),
         userApi.getActivity(5), // Get 5 recent activities
         userApi.getSavedProperties({ limit: 2 }), // Get 2 saved properties for preview
+        userApi.getSavedSearches(),
+        userApi.getViewings(),
       ]);
 
       setData({
@@ -99,6 +119,8 @@ export default function DashboardPage() {
         stats: statsData.stats,
         activities: activityData.activities,
         savedProperties: savedPropertiesData.properties,
+        savedSearches: savedSearchesData,
+        viewings: viewingsData,
       });
     } catch (err) {
       console.error('Failed to fetch dashboard data:', err);
@@ -380,6 +402,78 @@ export default function DashboardPage() {
                     Investment Portfolio
                   </Link>
                 </Button>
+              </CardContent>
+            </Card>
+
+            {/* Saved Searches */}
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle className="text-base">Saved Searches</CardTitle>
+                <Button variant="ghost" size="sm" asChild>
+                  <Link href="/saved-searches">View All</Link>
+                </Button>
+              </CardHeader>
+              <CardContent>
+                {data.savedSearches.length > 0 ? (
+                  <div className="space-y-3">
+                    {data.savedSearches.slice(0, 3).map((search) => (
+                      <div key={search.id} className="flex items-center justify-between p-2 border rounded">
+                        <div className="flex-1">
+                          <p className="text-sm font-medium">{search.name}</p>
+                          <p className="text-xs text-gray-500">
+                            {new Date(search.created_at).toLocaleDateString()}
+                          </p>
+                        </div>
+                        {search.alert_enabled && (
+                          <Badge variant="outline" className="text-xs">Alerts On</Badge>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-4 text-gray-500">
+                    <p className="text-sm">No saved searches yet</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Upcoming Viewings */}
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle className="text-base">Upcoming Viewings</CardTitle>
+                <Button variant="ghost" size="sm" asChild>
+                  <Link href="/my-viewings">View All</Link>
+                </Button>
+              </CardHeader>
+              <CardContent>
+                {data.viewings.length > 0 ? (
+                  <div className="space-y-3">
+                    {data.viewings.slice(0, 3).map((viewing) => (
+                      <div key={viewing.id} className="p-2 border rounded">
+                        <p className="text-sm font-medium">{viewing.property.title}</p>
+                        <p className="text-xs text-gray-600">
+                          {new Date(viewing.scheduled_at).toLocaleDateString()} at{' '}
+                          {new Date(viewing.scheduled_at).toLocaleTimeString([], {
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          })}
+                        </p>
+                        <Badge
+                          variant={viewing.status === 'confirmed' ? 'default' : 'secondary'}
+                          className="text-xs mt-1"
+                        >
+                          {viewing.status}
+                        </Badge>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-4 text-gray-500">
+                    <Calendar className="h-8 w-8 mx-auto mb-2 text-gray-300" />
+                    <p className="text-sm">No scheduled viewings</p>
+                  </div>
+                )}
               </CardContent>
             </Card>
 

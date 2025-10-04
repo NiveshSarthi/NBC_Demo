@@ -12,6 +12,9 @@ import Image from "next/image";
 import { SchemaMarkup } from "@/components/seo/SchemaMarkup";
 import { PropertyARViewer } from "@/components/ar/PropertyARViewer";
 import { VirtualTourViewer } from "@/components/virtual-tour/VirtualTourViewer";
+import { DynamicBanner } from "@/components/offers/DynamicBanner";
+import AIChatbot from "@/components/ai/AIChatbot";
+import { PropertyCard } from "@/components/properties/PropertyCard";
 
 
 export default function Home() {
@@ -81,12 +84,454 @@ export default function Home() {
     "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&q=80"
   ];
 
+  // Demo properties data for PropertyCard components
+  const demoProperties = [
+    {
+      id: 'home-demo-1',
+      title: 'Luxury Villa in Faridabad',
+      description: 'Premium villa with modern amenities and excellent connectivity',
+      property_type: 'residential',
+      listing_type: 'sale',
+      sub_type: 'Villa',
+      city: 'Faridabad',
+      state: 'Haryana',
+      address: 'Sector 89, Faridabad',
+      pincode: '121001',
+      latitude: 28.4089,
+      longitude: 77.3178,
+      price: 2500000,
+      rent_amount: null,
+      rent_period: null,
+      price_unit: 'INR',
+      area: 2500,
+      area_unit: 'sqft',
+      bedrooms: 3,
+      bathrooms: 4,
+      parking_spaces: 2,
+      floor_number: null,
+      total_floors: null,
+      year_built: 2022,
+      furnishing: 'semi_furnished',
+      amenities: ['Swimming Pool', 'Garden', 'Security', 'Power Backup', 'Lift'],
+      features: ['Corner Plot', 'Modular Kitchen', 'Air Conditioning'],
+      rera_registered: true,
+      rera_number: 'HR/12345/2022',
+      ownership_type: 'freehold',
+      possession_status: 'ready_to_move',
+      developer_name: 'Prestige Group',
+      project_name: 'Faridabad Heights',
+      ai_score: 9.1,
+      featured: true,
+      premium_listing: true,
+      virtual_tour_url: 'https://example.com/vt/faridabad',
+      three_d_tour_url: 'https://example.com/3d/faridabad',
+      gift_pack: {
+        inclusions: [
+          { name: 'Home Theater System', value: 250000, description: '5.1 surround sound system with 55" LED TV' },
+          { name: 'Smart Home Automation', value: 150000, description: 'Complete smart home setup with security cameras' },
+          { name: 'Modular Kitchen', value: 300000, description: 'Fully equipped modular kitchen with appliances' },
+          { name: 'Air Conditioning', value: 200000, description: 'Central AC system for entire villa' }
+        ],
+        images: ['https://images.unsplash.com/photo-1556909114-4c36e03f6bfe?w=400&q=80'],
+        terms: 'Gift pack inclusions are subject to availability and terms & conditions apply.'
+      },
+      highlight_types: ['Gift Pack Included', 'Ready to Move', 'Premium Listing'],
+      price_drop_amount: null,
+      is_new_launch: false,
+      units_left: null,
+      images: [{
+        id: '1',
+        property_id: 'home-demo-1',
+        image_url: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&q=80',
+        alt_text: 'Luxury villa exterior',
+        is_primary: true,
+        sort_order: 0,
+        image_type: 'exterior'
+      }],
+      predictions: [{
+        id: '1',
+        property_id: 'home-demo-1',
+        prediction_type: 'roi_analysis',
+        predicted_value: 12.5,
+        confidence_score: 88,
+        valid_until: new Date(Date.now() + 180 * 24 * 60 * 60 * 1000).toISOString(),
+        factors: { location_growth: 25, market_demand: 30, infrastructure: 35 }
+      }, {
+        id: '2',
+        property_id: 'home-demo-1',
+        prediction_type: 'investment_score',
+        predicted_value: 85,
+        confidence_score: 92,
+        valid_until: new Date(Date.now() + 180 * 24 * 60 * 60 * 1000).toISOString(),
+        factors: { financial_health: 20, market_timing: 25, risk_assessment: 40 }
+      }]
+    },
+    {
+      id: 'home-demo-2',
+      title: 'Luxury Apartment in Vrindavan',
+      description: 'Modern apartment near ISKCON temple with spiritual ambiance',
+      property_type: 'residential',
+      listing_type: 'sale',
+      sub_type: 'Apartment',
+      city: 'Vrindavan',
+      state: 'Uttar Pradesh',
+      address: 'Near ISKCON, Vrindavan',
+      pincode: '281121',
+      latitude: 27.5816,
+      longitude: 77.7006,
+      price: 850000,
+      rent_amount: null,
+      rent_period: null,
+      price_unit: 'INR',
+      area: 1500,
+      area_unit: 'sqft',
+      bedrooms: 3,
+      bathrooms: 2,
+      parking_spaces: 1,
+      floor_number: 5,
+      total_floors: 12,
+      year_built: 2021,
+      furnishing: 'fully_furnished',
+      amenities: ['Temple View', 'Meditation Garden', 'Security', 'Power Backup'],
+      features: ['East Facing', 'Modular Kitchen', 'Air Conditioning', 'WiFi'],
+      rera_registered: true,
+      rera_number: 'UP/23456/2021',
+      ownership_type: 'freehold',
+      possession_status: 'ready_to_move',
+      developer_name: 'Divine Properties',
+      project_name: 'Vrindavan Residency',
+      ai_score: 8.7,
+      featured: false,
+      premium_listing: false,
+      virtual_tour_url: 'https://example.com/vt/vrindavan',
+      drone_footage_url: 'https://example.com/drone/vrindavan',
+      highlight_types: ['Ready to Move', 'Religious Significance'],
+      price_drop_amount: 150000,
+      is_new_launch: false,
+      units_left: 8,
+      images: [{
+        id: '2',
+        property_id: 'home-demo-2',
+        image_url: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80',
+        alt_text: 'Luxury apartment',
+        is_primary: true,
+        sort_order: 0,
+        image_type: 'exterior'
+      }],
+      predictions: [{
+        id: '3',
+        property_id: 'home-demo-2',
+        prediction_type: 'roi_analysis',
+        predicted_value: 18.2,
+        confidence_score: 91,
+        valid_until: new Date(Date.now() + 180 * 24 * 60 * 60 * 1000).toISOString(),
+        factors: { location_growth: 35, market_demand: 25, infrastructure: 20 }
+      }, {
+        id: '4',
+        property_id: 'home-demo-2',
+        prediction_type: 'investment_score',
+        predicted_value: 78,
+        confidence_score: 85,
+        valid_until: new Date(Date.now() + 180 * 24 * 60 * 60 * 1000).toISOString(),
+        factors: { financial_health: 25, market_timing: 20, risk_assessment: 35 }
+      }]
+    },
+    {
+      id: 'home-demo-3',
+      title: 'Commercial Space in Dholera',
+      description: 'Prime commercial office complex in the upcoming smart city',
+      property_type: 'commercial',
+      listing_type: 'sale',
+      sub_type: 'Office Complex',
+      city: 'Dholera',
+      state: 'Gujarat',
+      address: 'Airport Zone, Dholera',
+      pincode: '382465',
+      latitude: 22.2442,
+      longitude: 72.1994,
+      price: 150000000,
+      rent_amount: null,
+      rent_period: null,
+      price_unit: 'INR',
+      area: 50000,
+      area_unit: 'sqft',
+      bedrooms: null,
+      bathrooms: 8,
+      parking_spaces: 20,
+      floor_number: null,
+      total_floors: 5,
+      year_built: 2023,
+      furnishing: 'bare_shell',
+      amenities: ['High-speed Internet', 'Conference Rooms', 'Security', 'Power Backup', 'Lift', 'Parking'],
+      features: ['Airport Proximity', 'Central AC', 'False Ceiling', 'Modular Design'],
+      rera_registered: true,
+      rera_number: 'GJ/34567/2023',
+      ownership_type: 'freehold',
+      possession_status: 'under_construction',
+      developer_name: 'Dholera Infrastructure',
+      project_name: 'Smart City Centre',
+      ai_score: 9.5,
+      featured: false,
+      premium_listing: true,
+      virtual_tour_url: 'https://example.com/vt/dholera',
+      three_d_tour_url: 'https://example.com/3d/dholera',
+      time_lapse_url: 'https://example.com/timelapse/dholera',
+      highlight_types: ['New Launch', 'Premium Listing', 'Under Construction'],
+      price_drop_amount: null,
+      is_new_launch: true,
+      units_left: 15,
+      images: [{
+        id: '3',
+        property_id: 'home-demo-3',
+        image_url: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80',
+        alt_text: 'Commercial office complex',
+        is_primary: true,
+        sort_order: 0,
+        image_type: 'exterior'
+      }],
+      predictions: [{
+        id: '5',
+        property_id: 'home-demo-3',
+        prediction_type: 'roi_analysis',
+        predicted_value: 25.8,
+        confidence_score: 94,
+        valid_until: new Date(Date.now() + 180 * 24 * 60 * 60 * 1000).toISOString(),
+        factors: { location_growth: 40, market_demand: 35, infrastructure: 50 }
+      }, {
+        id: '6',
+        property_id: 'home-demo-3',
+        prediction_type: 'investment_score',
+        predicted_value: 92,
+        confidence_score: 96,
+        valid_until: new Date(Date.now() + 180 * 24 * 60 * 60 * 1000).toISOString(),
+        factors: { financial_health: 30, market_timing: 40, risk_assessment: 50 }
+      }]
+    },
+    {
+      id: 'home-demo-4',
+      title: 'Temple Villa in Ayodhya',
+      description: 'Sacred villa in the spiritual capital with temple views',
+      property_type: 'residential',
+      listing_type: 'sale',
+      sub_type: 'Villa',
+      city: 'Ayodhya',
+      state: 'Uttar Pradesh',
+      address: 'Ram Janmabhoomi Area, Ayodhya',
+      pincode: '224123',
+      latitude: 26.7922,
+      longitude: 82.1998,
+      price: 12000000,
+      rent_amount: null,
+      rent_period: null,
+      price_unit: 'INR',
+      area: 8000,
+      area_unit: 'sqft',
+      bedrooms: 6,
+      bathrooms: 8,
+      parking_spaces: 4,
+      floor_number: null,
+      total_floors: 2,
+      year_built: 2020,
+      furnishing: 'fully_furnished',
+      amenities: ['Temple View', 'Meditation Rooms', 'Garden', 'Security', 'Power Backup'],
+      features: ['Sacred Architecture', 'Prayer Rooms', 'Air Conditioning', 'WiFi'],
+      rera_registered: true,
+      rera_number: 'UP/45678/2020',
+      ownership_type: 'freehold',
+      possession_status: 'ready_to_move',
+      developer_name: 'Sacred Homes',
+      project_name: 'Ram Nagar',
+      ai_score: 9.3,
+      featured: true,
+      premium_listing: false,
+      virtual_tour_url: 'https://example.com/vt/ayodhya',
+      drone_footage_url: 'https://example.com/drone/ayodhya',
+      highlight_types: ['Last Few Units', 'Ready to Move', 'Religious Significance'],
+      price_drop_amount: 500000,
+      is_new_launch: false,
+      units_left: 3,
+      images: [{
+        id: '4',
+        property_id: 'home-demo-4',
+        image_url: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80',
+        alt_text: 'Temple villa',
+        is_primary: true,
+        sort_order: 0,
+        image_type: 'exterior'
+      }],
+      predictions: [{
+        id: '7',
+        property_id: 'home-demo-4',
+        prediction_type: 'roi_analysis',
+        predicted_value: 30.5,
+        confidence_score: 96,
+        valid_until: new Date(Date.now() + 180 * 24 * 60 * 60 * 1000).toISOString(),
+        factors: { location_growth: 50, market_demand: 40, infrastructure: 45 }
+      }, {
+        id: '8',
+        property_id: 'home-demo-4',
+        prediction_type: 'investment_score',
+        predicted_value: 88,
+        confidence_score: 93,
+        valid_until: new Date(Date.now() + 180 * 24 * 60 * 60 * 1000).toISOString(),
+        factors: { financial_health: 35, market_timing: 30, risk_assessment: 45 }
+      }]
+    },
+    {
+      id: 'home-demo-5',
+      title: 'IT Park in Hyderabad',
+      description: 'Modern IT park complex in Hi-Tech City with excellent infrastructure',
+      property_type: 'commercial',
+      listing_type: 'sale',
+      sub_type: 'IT Park',
+      city: 'Hyderabad',
+      state: 'Telangana',
+      address: 'Hi-Tech City, Hyderabad',
+      pincode: '500081',
+      latitude: 17.4435,
+      longitude: 78.3772,
+      price: 250000000,
+      rent_amount: null,
+      rent_period: null,
+      price_unit: 'INR',
+      area: 25000,
+      area_unit: 'sqft',
+      bedrooms: null,
+      bathrooms: 12,
+      parking_spaces: 50,
+      floor_number: null,
+      total_floors: 8,
+      year_built: 2022,
+      furnishing: 'bare_shell',
+      amenities: ['High-speed Internet', 'Conference Rooms', 'Cafeteria', 'Security', 'Power Backup', 'Lift', 'Parking'],
+      features: ['Tech Infrastructure', 'Central AC', 'False Ceiling', 'Modular Design'],
+      rera_registered: true,
+      rera_number: 'TS/56789/2022',
+      ownership_type: 'freehold',
+      possession_status: 'ready_to_move',
+      developer_name: 'Tech Parks India',
+      project_name: 'Cyber City',
+      ai_score: 9.7,
+      featured: false,
+      premium_listing: true,
+      virtual_tour_url: 'https://example.com/vt/hyderabad',
+      three_d_tour_url: 'https://example.com/3d/hyderabad',
+      drone_footage_url: 'https://example.com/drone/hyderabad',
+      time_lapse_url: 'https://example.com/timelapse/hyderabad',
+      highlight_types: ['Exclusive Deal', 'Premium Listing', 'Ready to Move'],
+      price_drop_amount: 10000000,
+      is_new_launch: false,
+      units_left: null,
+      images: [{
+        id: '5',
+        property_id: 'home-demo-5',
+        image_url: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80',
+        alt_text: 'IT park complex',
+        is_primary: true,
+        sort_order: 0,
+        image_type: 'exterior'
+      }],
+      predictions: [{
+        id: '9',
+        property_id: 'home-demo-5',
+        prediction_type: 'roi_analysis',
+        predicted_value: 20.3,
+        confidence_score: 92,
+        valid_until: new Date(Date.now() + 180 * 24 * 60 * 60 * 1000).toISOString(),
+        factors: { location_growth: 30, market_demand: 45, infrastructure: 55 }
+      }, {
+        id: '10',
+        property_id: 'home-demo-5',
+        prediction_type: 'investment_score',
+        predicted_value: 94,
+        confidence_score: 98,
+        valid_until: new Date(Date.now() + 180 * 24 * 60 * 60 * 1000).toISOString(),
+        factors: { financial_health: 40, market_timing: 35, risk_assessment: 55 }
+      }]
+    },
+    {
+      id: 'home-demo-6',
+      title: 'Beachfront Resort in Goa',
+      description: 'Luxury beachfront resort with panoramic ocean views',
+      property_type: 'commercial',
+      listing_type: 'sale',
+      sub_type: 'Resort',
+      city: 'Panaji',
+      state: 'Goa',
+      address: 'Calangute Beach, North Goa',
+      pincode: '403516',
+      latitude: 15.5405,
+      longitude: 73.7551,
+      price: 180000000,
+      rent_amount: null,
+      rent_period: null,
+      price_unit: 'INR',
+      area: 15000,
+      area_unit: 'sqft',
+      bedrooms: null,
+      bathrooms: 20,
+      parking_spaces: 15,
+      floor_number: null,
+      total_floors: 3,
+      year_built: 2021,
+      furnishing: 'fully_furnished',
+      amenities: ['Private Beach', 'Swimming Pool', 'Spa', 'Restaurant', 'Security', 'Power Backup', 'Parking'],
+      features: ['Ocean View', 'Balcony Access', 'Air Conditioning', 'WiFi'],
+      rera_registered: true,
+      rera_number: 'GA/67890/2021',
+      ownership_type: 'freehold',
+      possession_status: 'ready_to_move',
+      developer_name: 'Goa Resorts Ltd',
+      project_name: 'Calangute Paradise',
+      ai_score: 8.9,
+      featured: false,
+      premium_listing: true,
+      virtual_tour_url: 'https://example.com/vt/goa',
+      three_d_tour_url: 'https://example.com/3d/goa',
+      drone_footage_url: 'https://example.com/drone/goa',
+      time_lapse_url: 'https://example.com/timelapse/goa',
+      highlight_types: ['Exclusive Deal', 'Premium Listing', 'Ready to Move'],
+      price_drop_amount: 5000000,
+      is_new_launch: false,
+      units_left: null,
+      images: [{
+        id: '6',
+        property_id: 'home-demo-6',
+        image_url: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=800&q=80',
+        alt_text: 'Beachfront resort',
+        is_primary: true,
+        sort_order: 0,
+        image_type: 'exterior'
+      }],
+      predictions: [{
+        id: '11',
+        property_id: 'home-demo-6',
+        prediction_type: 'roi_analysis',
+        predicted_value: 22.1,
+        confidence_score: 89,
+        valid_until: new Date(Date.now() + 180 * 24 * 60 * 60 * 1000).toISOString(),
+        factors: { location_growth: 35, market_demand: 40, infrastructure: 30 }
+      }, {
+        id: '12',
+        property_id: 'home-demo-6',
+        prediction_type: 'investment_score',
+        predicted_value: 86,
+        confidence_score: 91,
+        valid_until: new Date(Date.now() + 180 * 24 * 60 * 60 * 1000).toISOString(),
+        factors: { financial_health: 30, market_timing: 25, risk_assessment: 40 }
+      }]
+    }
+  ];
+
   return (
     <div className="min-h-screen">
       {/* Schema Markup */}
       <SchemaMarkup type="organization" data={{}} />
       <SchemaMarkup type="website" data={{}} />
       <SchemaMarkup type="real-estate-agent" data={{}} />
+
+      {/* Dynamic Banner */}
+      <DynamicBanner />
 
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 text-white overflow-hidden">
@@ -190,360 +635,10 @@ export default function Home() {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-           {/* Property Card 1 - AR Featured */}
-           <Card className="overflow-hidden hover:shadow-lg transition-shadow border-2 border-blue-200">
-             <div className="h-48 relative">
-               <Image
-                 src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&q=80"
-                 alt="Luxury Villa in Faridabad"
-                 fill
-                 className="object-cover"
-                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-               />
-               <div className="absolute top-4 left-4 flex gap-2">
-                 <Badge className="bg-orange-500">Premium</Badge>
-                 <Badge className="bg-purple-500 flex items-center gap-1">
-                   <Eye className="h-3 w-3" />
-                   AR View
-                 </Badge>
-               </div>
-               <div className="absolute bottom-4 left-4 text-white bg-black/50 px-2 py-1 rounded">
-                 <div className="text-lg font-bold">₹2.5Cr</div>
-                 <div className="text-sm">3BHK Villa</div>
-               </div>
-             </div>
-             <CardContent className="p-6">
-               <h3 className="font-semibold text-lg mb-2">Luxury Villa in Faridabad</h3>
-               <div className="flex items-center text-gray-600 mb-3">
-                 <MapPin className="h-4 w-4 mr-1" />
-                 Sector 89, Faridabad
-               </div>
-               <div className="flex justify-between text-sm text-gray-600 mb-4">
-                 <span>2,500 sq ft</span>
-                 <span>ROI: 12%</span>
-               </div>
-               <div className="flex gap-2">
-                 <Button
-                   size="sm"
-                   variant="outline"
-                   className="flex-1"
-                   onClick={() => handleOpenARModal({ title: "Luxury Villa in Faridabad", id: "faridabad-villa" })}
-                 >
-                   <Eye className="h-4 w-4 mr-1" />
-                   AR Tour
-                 </Button>
-                 <Button
-                   size="sm"
-                   variant="outline"
-                   className="flex-1"
-                   onClick={() => handleOpenVirtualTourModal({
-                     title: "Luxury Villa in Faridabad",
-                     id: "faridabad-villa",
-                     images: faridabadImages
-                   })}
-                 >
-                   <RotateCcw className="h-4 w-4 mr-1" />
-                   3D View
-                 </Button>
-               </div>
-             </CardContent>
-           </Card>
-
-           {/* Property Card 2 - 3D Featured */}
-           <Card className="overflow-hidden hover:shadow-lg transition-shadow border-2 border-green-200">
-          <div className="h-48 relative">
-            <Image
-              src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&q=80"
-              alt="Luxury Apartment in Vrindavan"
-              fill
-              className="object-cover"
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            />
-               <div className="absolute top-4 left-4 flex gap-2">
-                 <Badge className="bg-green-500">Residential</Badge>
-                 <Badge className="bg-indigo-500 flex items-center gap-1">
-                   <RotateCcw className="h-3 w-3" />
-                   3D Model
-                 </Badge>
-               </div>
-               <div className="absolute bottom-4 left-4 text-white bg-black/50 px-2 py-1 rounded">
-                 <div className="text-lg font-bold">₹85L</div>
-                 <div className="text-sm">3BHK Apartment</div>
-               </div>
-             </div>
-             <CardContent className="p-6">
-               <h3 className="font-semibold text-lg mb-2">Luxury Apartment in Vrindavan</h3>
-               <div className="flex items-center text-gray-600 mb-3">
-                 <MapPin className="h-4 w-4 mr-1" />
-                 Near ISKCON, Vrindavan
-               </div>
-               <div className="flex justify-between text-sm text-gray-600 mb-4">
-                 <span>1,500 sq ft</span>
-                 <span>ROI: 18%</span>
-               </div>
-               <div className="flex gap-2">
-                 <Button
-                   size="sm"
-                   variant="outline"
-                   className="flex-1"
-                   onClick={() => handleOpenARModal({ title: "Luxury Apartment in Vrindavan", id: "vrindavan-apartment" })}
-                 >
-                   <Eye className="h-4 w-4 mr-1" />
-                   AR View
-                 </Button>
-                 <Button
-                   size="sm"
-                   variant="outline"
-                   className="flex-1"
-                   onClick={() => handleOpenVirtualTourModal({
-                     title: "Luxury Apartment in Vrindavan",
-                     id: "vrindavan-apartment",
-                     images: vrindavanImages
-                   })}
-                 >
-                   <RotateCcw className="h-4 w-4 mr-1" />
-                   3D Model
-                 </Button>
-               </div>
-             </CardContent>
-           </Card>
-
-           {/* Property Card 3 - AR/3D Featured */}
-           <Card className="overflow-hidden hover:shadow-lg transition-shadow border-2 border-orange-200">
-             <div className="h-48 relative">
-               <Image
-                 src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80"
-                 alt="Commercial Space in Dholera"
-                 fill
-                 className="object-cover"
-                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-               />
-               <div className="absolute top-4 left-4 flex gap-2">
-                 <Badge className="bg-blue-500">Commercial</Badge>
-                 <Badge className="bg-pink-500 flex items-center gap-1">
-                   <Eye className="h-3 w-3" />
-                   AR/3D
-                 </Badge>
-               </div>
-               <div className="absolute bottom-4 left-4 text-white bg-black/50 px-2 py-1 rounded">
-                 <div className="text-lg font-bold">₹15Cr</div>
-                 <div className="text-sm">Office Complex</div>
-               </div>
-             </div>
-             <CardContent className="p-6">
-               <h3 className="font-semibold text-lg mb-2">Commercial Space in Dholera</h3>
-               <div className="flex items-center text-gray-600 mb-3">
-                 <MapPin className="h-4 w-4 mr-1" />
-                 Airport Zone, Dholera
-               </div>
-               <div className="flex justify-between text-sm text-gray-600 mb-4">
-                 <span>50,000 sq ft</span>
-                 <span>ROI: 25%</span>
-               </div>
-               <div className="flex gap-2">
-                 <Button
-                   size="sm"
-                   variant="outline"
-                   className="flex-1"
-                   onClick={() => handleOpenARModal({ title: "Commercial Space in Dholera", id: "dholera-commercial" })}
-                 >
-                   <Eye className="h-4 w-4 mr-1" />
-                   AR Walkthrough
-                 </Button>
-                 <Button
-                   size="sm"
-                   variant="outline"
-                   className="flex-1"
-                   onClick={() => handleOpenVirtualTourModal({
-                     title: "Commercial Space in Dholera",
-                     id: "dholera-commercial",
-                     images: dholeraImages
-                   })}
-                 >
-                   <RotateCcw className="h-4 w-4 mr-1" />
-                   360° View
-                 </Button>
-               </div>
-             </CardContent>
-           </Card>
-
-           {/* Property Card 4 - Religious Featured */}
-           <Card className="overflow-hidden hover:shadow-lg transition-shadow border-2 border-red-200">
-             <div className="h-48 relative">
-               <Image
-                 src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80"
-                 alt="Luxury Villa in Ayodhya"
-                 fill
-                 className="object-cover"
-                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-               />
-               <div className="absolute top-4 left-4 flex gap-2">
-                 <Badge className="bg-red-500">Sacred</Badge>
-                 <Badge className="bg-teal-500 flex items-center gap-1">
-                   <Eye className="h-3 w-3" />
-                   AR/3D
-                 </Badge>
-               </div>
-               <div className="absolute bottom-4 left-4 text-white bg-black/50 px-2 py-1 rounded">
-                 <div className="text-lg font-bold">₹12Cr</div>
-                 <div className="text-sm">Temple Villa</div>
-               </div>
-             </div>
-             <CardContent className="p-6">
-               <h3 className="font-semibold text-lg mb-2">Temple Villa in Ayodhya</h3>
-               <div className="flex items-center text-gray-600 mb-3">
-                 <MapPin className="h-4 w-4 mr-1" />
-                 Ram Janmabhoomi Area, Ayodhya
-               </div>
-               <div className="flex justify-between text-sm text-gray-600 mb-4">
-                 <span>8,000 sq ft</span>
-                 <span>ROI: 30%</span>
-               </div>
-               <div className="flex gap-2">
-                 <Button
-                   size="sm"
-                   variant="outline"
-                   className="flex-1"
-                   onClick={() => handleOpenARModal({ title: "Temple Villa in Ayodhya", id: "ayodhya-temple-villa" })}
-                 >
-                   <Eye className="h-4 w-4 mr-1" />
-                   AR Experience
-                 </Button>
-                 <Button
-                   size="sm"
-                   variant="outline"
-                   className="flex-1"
-                   onClick={() => handleOpenVirtualTourModal({
-                     title: "Temple Villa in Ayodhya",
-                     id: "ayodhya-temple-villa",
-                     images: ayodhyaImages
-                   })}
-                 >
-                   <RotateCcw className="h-4 w-4 mr-1" />
-                   Virtual Tour
-                 </Button>
-               </div>
-             </CardContent>
-           </Card>
-
-           {/* Property Card 5 - Hyderabad Featured */}
-           <Card className="overflow-hidden hover:shadow-lg transition-shadow border-2 border-purple-200">
-             <div className="h-48 relative">
-               <Image
-                 src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80"
-                 alt="IT Park in Hyderabad"
-                 fill
-                 className="object-cover"
-                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-               />
-               <div className="absolute top-4 left-4 flex gap-2">
-                 <Badge className="bg-purple-500">Tech Hub</Badge>
-                 <Badge className="bg-cyan-500 flex items-center gap-1">
-                   <Eye className="h-3 w-3" />
-                   AR/3D
-                 </Badge>
-               </div>
-               <div className="absolute bottom-4 left-4 text-white bg-black/50 px-2 py-1 rounded">
-                 <div className="text-lg font-bold">₹25Cr</div>
-                 <div className="text-sm">IT Park Complex</div>
-               </div>
-             </div>
-             <CardContent className="p-6">
-               <h3 className="font-semibold text-lg mb-2">IT Park in Hyderabad</h3>
-               <div className="flex items-center text-gray-600 mb-3">
-                 <MapPin className="h-4 w-4 mr-1" />
-                 Hi-Tech City, Hyderabad
-               </div>
-               <div className="flex justify-between text-sm text-gray-600 mb-4">
-                 <span>25,000 sq ft</span>
-                 <span>ROI: 20%</span>
-               </div>
-               <div className="flex gap-2">
-                 <Button
-                   size="sm"
-                   variant="outline"
-                   className="flex-1"
-                   onClick={() => handleOpenARModal({ title: "IT Park in Hyderabad", id: "hyderabad-it-park" })}
-                 >
-                   <Eye className="h-4 w-4 mr-1" />
-                   AR Tour
-                 </Button>
-                 <Button
-                   size="sm"
-                   variant="outline"
-                   className="flex-1"
-                   onClick={() => handleOpenVirtualTourModal({
-                     title: "IT Park in Hyderabad",
-                     id: "hyderabad-it-park",
-                     images: hyderabadImages
-                   })}
-                 >
-                   <RotateCcw className="h-4 w-4 mr-1" />
-                   3D Model
-                 </Button>
-               </div>
-             </CardContent>
-           </Card>
-
-           {/* Property Card 6 - Goa Featured */}
-           <Card className="overflow-hidden hover:shadow-lg transition-shadow border-2 border-teal-200">
-             <div className="h-48 relative">
-               <Image
-                 src="https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=800&q=80"
-                 alt="Beachfront Resort in Goa"
-                 fill
-                 className="object-cover"
-                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-               />
-               <div className="absolute top-4 left-4 flex gap-2">
-                 <Badge className="bg-teal-500">Luxury</Badge>
-                 <Badge className="bg-pink-500 flex items-center gap-1">
-                   <Eye className="h-3 w-3" />
-                   AR/3D
-                 </Badge>
-               </div>
-               <div className="absolute bottom-4 left-4 text-white bg-black/50 px-2 py-1 rounded">
-                 <div className="text-lg font-bold">₹18Cr</div>
-                 <div className="text-sm">Beach Resort</div>
-               </div>
-             </div>
-             <CardContent className="p-6">
-               <h3 className="font-semibold text-lg mb-2">Beachfront Resort in Goa</h3>
-               <div className="flex items-center text-gray-600 mb-3">
-                 <MapPin className="h-4 w-4 mr-1" />
-                 Calangute Beach, Goa
-               </div>
-               <div className="flex justify-between text-sm text-gray-600 mb-4">
-                 <span>15,000 sq ft</span>
-                 <span>ROI: 22%</span>
-               </div>
-               <div className="flex gap-2">
-                 <Button
-                   size="sm"
-                   variant="outline"
-                   className="flex-1"
-                   onClick={() => handleOpenARModal({ title: "Beachfront Resort in Goa", id: "goa-beach-resort" })}
-                 >
-                   <Eye className="h-4 w-4 mr-1" />
-                   AR Experience
-                 </Button>
-                 <Button
-                   size="sm"
-                   variant="outline"
-                   className="flex-1"
-                   onClick={() => handleOpenVirtualTourModal({
-                     title: "Beachfront Resort in Goa",
-                     id: "goa-beach-resort",
-                     images: goaImages
-                   })}
-                 >
-                   <RotateCcw className="h-4 w-4 mr-1" />
-                   Virtual Tour
-                 </Button>
-               </div>
-             </CardContent>
-           </Card>
-         </div>
+            {demoProperties.map((property) => (
+              <PropertyCard key={property.id} property={property} />
+            ))}
+          </div>
 
          <div className="text-center mt-12">
             <Button size="lg" asChild>
@@ -694,6 +789,9 @@ export default function Home() {
               )}
             </DialogContent>
           </Dialog>
+
+          {/* AI Chatbot */}
+          <AIChatbot />
     </div>
   );
 }

@@ -25,6 +25,9 @@ export function ROICalculator() {
     initialInvestment: '',
     finalValue: '',
     investmentPeriodYears: '',
+    annualRentalIncome: '',
+    annualExpenses: '',
+    vacancyRate: '',
     isCompound: true,
   });
   const [result, setResult] = useState<ROIResult | null>(null);
@@ -44,6 +47,9 @@ export function ROICalculator() {
           initialInvestment: parseFloat(formData.initialInvestment),
           finalValue: parseFloat(formData.finalValue),
           investmentPeriodYears: parseInt(formData.investmentPeriodYears),
+          annualRentalIncome: parseFloat(formData.annualRentalIncome) || 0,
+          annualExpenses: parseFloat(formData.annualExpenses) || 0,
+          vacancyRate: parseFloat(formData.vacancyRate) || 0,
           isCompound: formData.isCompound,
         }),
       });
@@ -100,6 +106,39 @@ export function ROICalculator() {
               value={formData.investmentPeriodYears}
               onChange={(e) => handleInputChange('investmentPeriodYears', e.target.value)}
               required
+            />
+          </div>
+          <div>
+            <Label htmlFor="annualRentalIncome">Annual Rental Income (₹)</Label>
+            <Input
+              id="annualRentalIncome"
+              type="number"
+              placeholder="120000"
+              value={formData.annualRentalIncome}
+              onChange={(e) => handleInputChange('annualRentalIncome', e.target.value)}
+            />
+          </div>
+          <div>
+            <Label htmlFor="annualExpenses">Annual Expenses (₹)</Label>
+            <Input
+              id="annualExpenses"
+              type="number"
+              placeholder="50000"
+              value={formData.annualExpenses}
+              onChange={(e) => handleInputChange('annualExpenses', e.target.value)}
+            />
+          </div>
+          <div>
+            <Label htmlFor="vacancyRate">Vacancy Rate (%)</Label>
+            <Input
+              id="vacancyRate"
+              type="number"
+              step="0.1"
+              placeholder="5.0"
+              value={formData.vacancyRate}
+              onChange={(e) => handleInputChange('vacancyRate', e.target.value)}
+              min="0"
+              max="100"
             />
           </div>
         </div>

@@ -86,6 +86,12 @@ export const userApi = {
 
   getDashboardStats: () =>
     apiRequest('/user/dashboard-stats'),
+
+  getSavedSearches: () =>
+    apiRequest('/saved-searches'),
+
+  getViewings: () =>
+    apiRequest('/user/viewings'),
 };
 
 // Auth API functions

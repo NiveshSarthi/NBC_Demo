@@ -12,15 +12,19 @@ interface PropertyDetailPageProps {
 export async function generateMetadata({ params }: PropertyDetailPageProps): Promise<Metadata> {
   try {
     const { id } = await params;
+    let property = null;
+
+    // First try to parse as ID
     const propertyId = parseInt(id);
-    if (isNaN(propertyId)) {
-      return {
-        title: "Property Not Found - NextBoomCity",
-        description: "The property you're looking for could not be found.",
-      };
+    if (!isNaN(propertyId)) {
+      property = await PropertyModel.findById(propertyId);
     }
 
-    const property = await PropertyModel.findById(propertyId);
+    // If not found by ID, try as slug
+    if (!property) {
+      property = await PropertyModel.findBySlug(id);
+    }
+
     if (!property) {
       return {
         title: "Property Not Found - NextBoomCity",
@@ -87,10 +91,18 @@ export async function generateMetadata({ params }: PropertyDetailPageProps): Pro
 
 export default async function PropertyDetailPage({ params }: PropertyDetailPageProps) {
   const { id } = await params;
-  const propertyId = parseInt(id);
+  let property = null;
 
-  // Fetch property data for schema markup
-  const property = !isNaN(propertyId) ? await PropertyModel.findById(propertyId) : null;
+  // First try to parse as ID
+  const propertyId = parseInt(id);
+  if (!isNaN(propertyId)) {
+    property = await PropertyModel.findById(propertyId);
+  }
+
+  // If not found by ID, try as slug
+  if (!property) {
+    property = await PropertyModel.findBySlug(id);
+  }
 
   return (
     <>

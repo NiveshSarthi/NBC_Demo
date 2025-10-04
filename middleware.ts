@@ -13,6 +13,7 @@ export function middleware(request: NextRequest) {
     '/api/v1/auth/reset-password',
     '/api/health',
     '/api/v1/content/',
+    '/api/v1/ai/chat',
   ];
 
   // Check if the route is public

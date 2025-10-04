@@ -11,15 +11,19 @@ interface RouteParams {
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
     const { id } = await params;
+    let property = null;
+
+    // First try to parse as ID
     const propertyId = parseInt(id);
-    if (isNaN(propertyId)) {
-      return NextResponse.json(
-        { error: { code: 'INVALID_ID', message: 'Invalid property ID' } },
-        { status: 400 }
-      );
+    if (!isNaN(propertyId)) {
+      property = await PropertyModel.getPropertyDetails(propertyId);
     }
 
-    const property = await PropertyModel.getPropertyDetails(propertyId);
+    // If not found by ID, try as slug
+    if (!property) {
+      property = await PropertyModel.findBySlug(id);
+    }
+
     if (!property) {
       return NextResponse.json(
         { error: { code: 'NOT_FOUND', message: 'Property not found' } },

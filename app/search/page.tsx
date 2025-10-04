@@ -11,18 +11,34 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { Search, MapPin, Filter, X, Loader2 } from "lucide-react";
+import { Search, MapPin, Filter, X, Loader2, GitCompare, Save, Bell } from "lucide-react";
 import { useSearchProperties } from "@/lib/hooks/use-properties";
 import { PropertyFilters, PaginationOptions } from "@/types/api";
+import { PricePrediction } from "@/components/property/PricePrediction";
+import { useAuth } from "@/lib/auth-context";
+import { apiRequest } from "@/lib/api";
 import Head from "next/head";
 
 export default function SearchPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const { user } = useAuth();
 
   const [searchInput, setSearchInput] = useState(searchParams.get("q") || "");
   const [debouncedSearchInput, setDebouncedSearchInput] = useState(searchInput);
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [saveSearchOpen, setSaveSearchOpen] = useState(false);
+  const [saveSearchName, setSaveSearchName] = useState("");
+  const [saveSearchLoading, setSaveSearchLoading] = useState(false);
+  const [alertEnabled, setAlertEnabled] = useState(false);
+
+  // Compare functionality
+  const [compareList, setCompareList] = useState<number[]>([]);
+
+  useEffect(() => {
+    const list = JSON.parse(localStorage.getItem('compareProperties') || '[]');
+    setCompareList(list);
+  }, []);
 
   const updateSearchParams = useCallback((updates: Record<string, string | null>) => {
     const newParams = new URLSearchParams(searchParams.toString());
@@ -72,7 +88,7 @@ export default function SearchPage() {
     sortOrder: (searchParams.get("sortOrder") as any) || "desc",
   }), [searchParams]);
 
-  const { properties, pagination: apiPagination, isLoading, error } = useSearchProperties(debouncedSearchInput, filters, pagination);
+  const { properties, pagination: apiPagination, smartSuggestions, parsedQuery, isLoading, error } = useSearchProperties(debouncedSearchInput, filters, pagination);
 
   // Update search input when URL changes
   useEffect(() => {
@@ -90,6 +106,52 @@ export default function SearchPage() {
 
   const handlePageChange = (page: number) => {
     updateSearchParams({ page: page.toString() });
+  };
+
+  const toggleCompare = (propertyId: number) => {
+    const currentList = JSON.parse(localStorage.getItem('compareProperties') || '[]');
+    let newList;
+
+    if (currentList.includes(propertyId)) {
+      newList = currentList.filter((id: number) => id !== propertyId);
+    } else {
+      if (currentList.length >= 4) {
+        alert('You can compare up to 4 properties at a time.');
+        return;
+      }
+      newList = [...currentList, propertyId];
+    }
+
+    localStorage.setItem('compareProperties', JSON.stringify(newList));
+    setCompareList(newList);
+  };
+
+  const handleSaveSearch = async () => {
+    if (!user) return;
+
+    try {
+      setSaveSearchLoading(true);
+      await apiRequest('/saved-searches', {
+        method: 'POST',
+        body: JSON.stringify({
+          name: saveSearchName,
+          search_query: searchInput,
+          filters,
+          location_bounds: null, // Could be extended for map bounds
+          alert_enabled: alertEnabled,
+        }),
+      });
+
+      setSaveSearchOpen(false);
+      setSaveSearchName("");
+      setAlertEnabled(false);
+      // Could show a success toast here
+    } catch (error) {
+      console.error('Error saving search:', error);
+      // Could show an error toast here
+    } finally {
+      setSaveSearchLoading(false);
+    }
   };
 
   return (
@@ -116,6 +178,56 @@ export default function SearchPage() {
                 </div>
               </div>
               <div className="flex items-center gap-4">
+                {user && (
+                  <Dialog open={saveSearchOpen} onOpenChange={setSaveSearchOpen}>
+                    <DialogTrigger asChild>
+                      <Button variant="outline">
+                        <Save className="h-4 w-4 mr-2" />
+                        Save Search
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Save This Search</DialogTitle>
+                      </DialogHeader>
+                      <div className="space-y-4">
+                        <div>
+                          <Label htmlFor="search-name">Search Name</Label>
+                          <Input
+                            id="search-name"
+                            placeholder="e.g., 3BHK in Delhi under 1Cr"
+                            value={saveSearchName}
+                            onChange={(e) => setSaveSearchName(e.target.value)}
+                          />
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <input
+                            type="checkbox"
+                            id="alerts"
+                            checked={alertEnabled}
+                            onChange={(e) => setAlertEnabled(e.target.checked)}
+                            className="rounded"
+                          />
+                          <Label htmlFor="alerts" className="flex items-center">
+                            <Bell className="h-4 w-4 mr-1" />
+                            Enable price drop alerts
+                          </Label>
+                        </div>
+                        <div className="flex justify-end gap-2">
+                          <Button variant="outline" onClick={() => setSaveSearchOpen(false)}>
+                            Cancel
+                          </Button>
+                          <Button
+                            onClick={handleSaveSearch}
+                            disabled={!saveSearchName.trim() || saveSearchLoading}
+                          >
+                            {saveSearchLoading ? 'Saving...' : 'Save Search'}
+                          </Button>
+                        </div>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+                )}
                 <Dialog open={filtersOpen} onOpenChange={setFiltersOpen}>
                   <DialogTrigger asChild>
                     <Button variant="outline">
@@ -233,6 +345,11 @@ export default function SearchPage() {
                       </Badge>
                     </div>
                   )}
+                  {parsedQuery && parsedQuery.appliedFilters && parsedQuery.appliedFilters.length > 0 && (
+                    <div className="mt-2 text-sm text-gray-600">
+                      <span className="font-medium">AI Applied Filters:</span> {parsedQuery.appliedFilters.join(', ')}
+                    </div>
+                  )}
                 </div>
                 <div className="text-gray-600">
                   {isLoading ? (
@@ -243,6 +360,60 @@ export default function SearchPage() {
                 </div>
               </div>
             </div>
+
+            {/* AI Suggestions */}
+            {smartSuggestions && smartSuggestions.length > 0 && !isLoading && (
+              <div className="mt-4">
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <div className="flex items-center mb-3">
+                    <div className="bg-blue-100 p-2 rounded-full mr-3">
+                      <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      </svg>
+                    </div>
+                    <h3 className="font-semibold text-blue-900">AI Suggestions</h3>
+                  </div>
+                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {smartSuggestions.map((suggestion: any, index: number) => (
+                      <div key={index} className="bg-white rounded-lg p-3 border border-blue-200">
+                        <h4 className="font-medium text-sm text-gray-900 mb-2">{suggestion.label}</h4>
+                        <div className="space-y-1">
+                          {suggestion.options.slice(0, 3).map((option: any, optIndex: number) => (
+                            <button
+                              key={optIndex}
+                              onClick={() => {
+                                if (suggestion.type === 'budget') {
+                                  updateSearchParams({
+                                    minPrice: option.minPrice?.toString(),
+                                    maxPrice: option.maxPrice?.toString(),
+                                    page: "1"
+                                  });
+                                } else if (suggestion.type === 'location') {
+                                  updateSearchParams({ city: option.value, page: "1" });
+                                } else if (suggestion.type === 'property_type') {
+                                  updateSearchParams({ propertyType: option.value, page: "1" });
+                                } else if (suggestion.type === 'amenities') {
+                                  const currentAmenities = filters.amenities || [];
+                                  if (!currentAmenities.includes(option.value)) {
+                                    updateSearchParams({
+                                      amenities: [...currentAmenities, option.value].join(','),
+                                      page: "1"
+                                    });
+                                  }
+                                }
+                              }}
+                              className="w-full text-left text-xs text-blue-700 hover:text-blue-900 hover:bg-blue-50 px-2 py-1 rounded transition-colors"
+                            >
+                              {option.label}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
@@ -317,9 +488,19 @@ export default function SearchPage() {
                       </span>
                       <Badge variant="outline">{property.property_type}</Badge>
                     </div>
-                    <Button className="w-full" asChild>
-                      <Link href={`/properties/${property.id}`}>View Details</Link>
-                    </Button>
+                    <div className="grid grid-cols-2 gap-2">
+                      <Button
+                        variant={compareList.includes(property.id) ? "default" : "outline"}
+                        onClick={() => toggleCompare(property.id)}
+                        className="flex items-center gap-1"
+                      >
+                        <GitCompare className="h-4 w-4" />
+                        {compareList.includes(property.id) ? 'Remove' : 'Compare'}
+                      </Button>
+                      <Button variant="outline" asChild>
+                        <Link href={`/properties/${property.id}`}>View Details</Link>
+                      </Button>
+                    </div>
                   </CardContent>
                 </Card>
               ))}
@@ -328,15 +509,26 @@ export default function SearchPage() {
 
           {/* No Results State */}
           {!isLoading && !error && properties.length === 0 && (
-            <div className="text-center py-16">
-              <Search className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">No properties found</h3>
-              <p className="text-gray-600 mb-6">
-                Try adjusting your search criteria or browse all properties.
-              </p>
-              <Button asChild>
-                <Link href="/properties">Browse All Properties</Link>
-              </Button>
+            <div className="space-y-8">
+              <div className="text-center py-8">
+                <Search className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">No properties found in this area</h3>
+                <p className="text-gray-600 mb-6">
+                  This might be a developing area. Check out our AI-powered price predictions below, or try adjusting your search criteria.
+                </p>
+                <Button asChild>
+                  <Link href="/properties">Browse All Properties</Link>
+                </Button>
+              </div>
+
+              {/* Price Predictions */}
+              <div className="max-w-2xl mx-auto">
+                <PricePrediction
+                  location={filters.city || searchInput}
+                  propertyType={filters.propertyType}
+                  bedrooms={filters.bedrooms}
+                />
+              </div>
             </div>
           )}
 
