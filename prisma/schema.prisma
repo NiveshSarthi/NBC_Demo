@@ -1,0 +1,367 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  user
+  agent
+  admin
+}
+
+enum PropertyType {
+  residential
+  commercial
+  plot
+  religious
+}
+
+enum PriceUnit {
+  INR
+  USD
+}
+
+enum AreaUnit {
+  sqft
+  sqm
+  acre
+  hectare
+}
+
+enum Furnishing {
+  unfurnished
+  semi_furnished
+  fully_furnished
+}
+
+enum OwnershipType {
+  freehold
+  leasehold
+  cooperative
+}
+
+enum PossessionStatus {
+  ready_to_move
+  under_construction
+  new_launch
+}
+
+enum PropertyStatus {
+  active
+  sold
+  rented
+  inactive
+}
+
+enum ListingType {
+  sale
+  rent
+}
+
+enum RentPeriod {
+  daily
+  monthly
+  yearly
+}
+
+enum LocationType {
+  primary
+  secondary
+  emerging
+}
+
+enum TierClassification {
+  tier1
+  tier2
+  tier3
+}
+
+enum ImageType {
+  exterior
+  interior
+  amenity
+  location
+  floor_plan
+}
+
+enum EventType {
+  view
+  inquiry
+  save
+  share
+  contact
+}
+
+enum PredictionType {
+  price_forecast
+  investment_score
+  roi_analysis
+}
+
+enum InquiryType {
+  general
+  price
+  availability
+  visit
+}
+
+enum InquiryStatus {
+  new
+  responded
+  closed
+}
+
+model User {
+  id                Int      @id @default(autoincrement())
+  email             String   @unique
+  password_hash     String
+  first_name        String?
+  last_name         String?
+  phone             String?
+  role              UserRole @default(user)
+  avatar_url        String?
+  preferences       Json?
+  email_verified    Boolean  @default(false)
+  phone_verified    Boolean  @default(false)
+  investment_budget Decimal? @db.Decimal(15, 2)
+  preferred_locations String[]
+  created_at        DateTime @default(now())
+  updated_at        DateTime @updatedAt
+  last_login        DateTime?
+
+  // Relations
+  properties        Property[] @relation("CreatedBy")
+  analytics         Analytic[]
+  searches          UserSearch[]
+  inquiries         Inquiry[]
+  responded_inquiries Inquiry[] @relation("RespondedBy")
+  payments          Payment[]
+
+  @@map("users")
+}
+
+model Property {
+  id                 Int          @id @default(autoincrement())
+  title              String
+  description        String?
+  property_type      PropertyType
+  sub_type           String?
+  listing_type       ListingType  @default(sale)
+  location_id        Int?
+  address            String?
+  city               String?
+  state              String?
+  pincode            String?
+  latitude           Decimal?     @db.Decimal(10, 8)
+  longitude          Decimal?     @db.Decimal(11, 8)
+  price              Decimal?     @db.Decimal(15, 2)
+  rent_amount        Decimal?     @db.Decimal(15, 2)
+  rent_period        RentPeriod   @default(monthly)
+  price_unit         PriceUnit    @default(INR)
+  area               Decimal?     @db.Decimal(10, 2)
+  area_unit          AreaUnit     @default(sqft)
+  bedrooms           Int?
+  bathrooms          Int?
+  parking_spaces     Int?
+  floor_number       Int?
+  total_floors       Int?
+  year_built         Int?
+  furnishing         Furnishing?
+  amenities          String[]
+  features           String[]
+  rera_registered    Boolean      @default(false)
+  rera_number        String?
+  ownership_type     OwnershipType?
+  possession_status  PossessionStatus?
+  possession_date    DateTime?
+  developer_name     String?
+  project_name       String?
+  virtual_tour_url   String?
+  video_tour_url     String?
+  ai_score           Decimal?     @db.Decimal(5, 2)
+  ai_prediction      Json?
+  religious_significance String?
+  infrastructure_impact Json?
+  status             PropertyStatus @default(active)
+  featured           Boolean      @default(false)
+  premium_listing    Boolean      @default(false)
+  views_count        Int          @default(0)
+  inquiries_count    Int          @default(0)
+  created_by         Int?
+  created_at         DateTime     @default(now())
+  updated_at         DateTime     @updatedAt
+
+  // Relations
+  location          Location?     @relation(fields: [location_id], references: [id])
+  creator           User?         @relation("CreatedBy", fields: [created_by], references: [id])
+  images            PropertyImage[]
+  analytics         Analytic[]
+  predictions       AiPrediction[]
+  inquiries         Inquiry[]
+
+  @@map("properties")
+}
+
+model Location {
+  id                   Int             @id @default(autoincrement())
+  name                 String
+  city                 String?
+  state                String?
+  district             String?
+  type                 LocationType    @default(secondary)
+  latitude             Decimal?        @db.Decimal(10, 8)
+  longitude            Decimal?        @db.Decimal(11, 8)
+  population           BigInt?
+  area_sqkm            Decimal?        @db.Decimal(10, 2)
+  gdp_per_capita       Decimal?        @db.Decimal(10, 2)
+  growth_rate          Decimal?        @db.Decimal(5, 2)
+  master_plan_url      String?
+  master_plan_data     Json?
+  infrastructure_projects Json?
+  religious_sites      Json?
+  airport_distance_km  Decimal?        @db.Decimal(8, 2)
+  metro_distance_km    Decimal?        @db.Decimal(8, 2)
+  expressway_distance_km Decimal?      @db.Decimal(8, 2)
+  smart_city_status    Boolean         @default(false)
+  tier_classification  TierClassification?
+  investment_potential Decimal?        @db.Decimal(3, 1)
+  created_at           DateTime        @default(now())
+  updated_at           DateTime        @updatedAt
+
+  // Relations
+  properties          Property[]
+
+  @@map("locations")
+}
+
+model PropertyImage {
+  id          Int        @id @default(autoincrement())
+  property_id Int
+  image_url   String
+  alt_text    String?
+  is_primary  Boolean    @default(false)
+  sort_order  Int        @default(0)
+  image_type  ImageType?
+  created_at  DateTime   @default(now())
+
+  // Relations
+  property    Property   @relation(fields: [property_id], references: [id], onDelete: Cascade)
+
+  @@map("property_images")
+}
+
+model Analytic {
+  id          Int       @id @default(autoincrement())
+  property_id Int?
+  event_type  EventType
+  user_id     Int?
+  session_id  String?
+  ip_address  String?   @db.Inet
+  user_agent  String?
+  referrer_url String?
+  timestamp   DateTime  @default(now())
+
+  // Relations
+  property    Property? @relation(fields: [property_id], references: [id])
+  user        User?     @relation(fields: [user_id], references: [id])
+
+  @@map("analytics")
+}
+
+model AiPrediction {
+  id               Int           @id @default(autoincrement())
+  property_id      Int
+  prediction_type  PredictionType
+  predicted_value  Decimal       @db.Decimal(15, 2)
+  confidence_score Decimal       @db.Decimal(5, 2)
+  prediction_date  DateTime      @default(now())
+  valid_until      DateTime?
+  factors          Json?
+  model_version    String?
+  created_at       DateTime      @default(now())
+
+  // Relations
+  property         Property      @relation(fields: [property_id], references: [id])
+
+  @@map("ai_predictions")
+}
+
+model UserSearch {
+  id           Int      @id @default(autoincrement())
+  user_id      Int
+  search_query String?
+  filters      Json?
+  location_bounds Json?
+  results_count Int?
+  timestamp    DateTime @default(now())
+
+  // Relations
+  user         User     @relation(fields: [user_id], references: [id])
+
+  @@map("user_searches")
+}
+
+model Inquiry {
+  id            Int           @id @default(autoincrement())
+  property_id   Int
+  user_id       Int
+  name          String
+  email         String
+  phone         String?
+  message       String
+  inquiry_type  InquiryType   @default(general)
+  status        InquiryStatus @default(new)
+  response      String?
+  responded_by  Int?
+  responded_at  DateTime?
+  created_at    DateTime      @default(now())
+
+  // Relations
+  property      Property      @relation(fields: [property_id], references: [id])
+  user          User          @relation(fields: [user_id], references: [id])
+  responder     User?         @relation("RespondedBy", fields: [responded_by], references: [id])
+
+  @@map("inquiries")
+}
+
+enum PaymentStatus {
+  pending
+  completed
+  failed
+  refunded
+}
+
+enum PaymentType {
+  premium_listing
+  featured_listing
+  property_report
+  virtual_tour
+  consultation
+}
+
+model Payment {
+  id                Int           @id @default(autoincrement())
+  user_id           Int
+  amount            Decimal       @db.Decimal(10, 2)
+  currency          String        @default("INR")
+  payment_type      PaymentType
+  status            PaymentStatus @default(pending)
+  razorpay_order_id String?
+  razorpay_payment_id String?
+  description       String?
+  metadata          Json?
+  created_at        DateTime      @default(now())
+  updated_at        DateTime      @updatedAt
+
+  // Relations
+  user              User          @relation(fields: [user_id], references: [id])
+
+  @@map("payments")
+}
