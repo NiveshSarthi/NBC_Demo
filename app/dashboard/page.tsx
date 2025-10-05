@@ -95,6 +95,22 @@ export default function DashboardPage() {
     }
 
     if (authUser) {
+      // Redirect users to their role-specific dashboards
+      if (authUser.role === 'admin') {
+        router.push('/admin');
+        return;
+      } else if (authUser.role === 'builder') {
+        router.push('/dashboard/builder');
+        return;
+      } else if (authUser.role === 'agent') {
+        router.push('/dashboard/agent');
+        return;
+      } else if (authUser.role === 'seller') {
+        router.push('/dashboard/seller');
+        return;
+      }
+      // For 'buyer' and 'user' roles, stay on this dashboard
+
       fetchDashboardData();
     }
   }, [authUser, authLoading, router]);

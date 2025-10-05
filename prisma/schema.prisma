@@ -14,6 +14,9 @@ enum UserRole {
   user
   agent
   admin
+  builder
+  buyer
+  seller
 }
 
 enum PropertyType {
@@ -157,6 +160,44 @@ enum ViewingStatus {
   cancelled
 }
 
+enum LeadStatus {
+  new
+  contacted
+  qualified
+  proposal_sent
+  negotiation
+  won
+  lost
+  archived
+}
+
+enum LeadSource {
+  website
+  referral
+  social_media
+  advertisement
+  cold_call
+  email_campaign
+  other
+}
+
+enum CampaignType {
+  email
+  sms
+  social_media
+  banner
+  promotion
+  discount
+}
+
+enum CampaignStatus {
+  draft
+  active
+  paused
+  completed
+  cancelled
+}
+
 model User {
   id                Int      @id @default(autoincrement())
   email             String   @unique
@@ -190,8 +231,11 @@ model User {
     property_reviews     PropertyReview[]
     forum_posts          CommunityForumPost[]
     viewing_schedules    ViewingScheduler[]
-
-  @@map("users")
+    created_campaigns    Campaign[]
+    assigned_leads       Lead[] @relation("LeadAssignee")
+    leads                Lead[]
+  
+    @@map("users")
   }
   
   model Builder {
@@ -207,7 +251,10 @@ model User {
     updated_at            DateTime @updatedAt
   
     // Relations
-    properties            Property[]
+    properties           Property[]
+    leads                Lead[]
+    campaigns            Campaign[]
+    analytics            BuilderAnalytics[]
   
     @@map("builders")
   }
@@ -294,8 +341,9 @@ model User {
     property_reviews   PropertyReview[]
     forum_posts        CommunityForumPost[]
     viewing_schedules  ViewingScheduler[]
-
-  @@map("properties")
+    leads              Lead[]
+  
+    @@map("properties")
 }
 
 model ReraCompliance {
@@ -616,18 +664,89 @@ model ViewingScheduler {
 }
 
 model Offer {
- id          Int       @id @default(autoincrement())
- title       String
- description String?
- image_url   String
- link_url    String?
- type        OfferType
- is_active   Boolean   @default(true)
- start_date  DateTime
- end_date    DateTime?
- priority    Int       @default(1)
- created_at  DateTime  @default(now())
- updated_at  DateTime  @updatedAt
+  id          Int       @id @default(autoincrement())
+  title       String
+  description String?
+  image_url   String
+  link_url    String?
+  type        OfferType
+  is_active   Boolean   @default(true)
+  start_date  DateTime
+  end_date    DateTime?
+  priority    Int       @default(1)
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @updatedAt
 
- @@map("offers")
+  @@map("offers")
+}
+
+model Lead {
+  id              Int         @id @default(autoincrement())
+  builder_id      Int
+  property_id     Int?
+  user_id         Int?
+  name            String
+  email           String
+  phone           String
+  status          LeadStatus  @default(new)
+  source          LeadSource  @default(website)
+  budget_min      Decimal?    @db.Decimal(15, 2)
+  budget_max      Decimal?    @db.Decimal(15, 2)
+  preferred_location String?
+  requirements    String?
+  notes           String?
+  last_contacted  DateTime?
+  next_followup   DateTime?
+  assigned_to     Int?        // builder user id
+  tags            String[]
+  created_at      DateTime    @default(now())
+  updated_at      DateTime    @updatedAt
+
+  // Relations
+  builder         Builder     @relation(fields: [builder_id], references: [id])
+  property        Property?   @relation(fields: [property_id], references: [id])
+  user            User?       @relation(fields: [user_id], references: [id])
+  assignee        User?       @relation("LeadAssignee", fields: [assigned_to], references: [id])
+
+  @@map("leads")
+}
+
+model Campaign {
+  id              Int           @id @default(autoincrement())
+  builder_id      Int
+  title           String
+  description     String?
+  type            CampaignType
+  status          CampaignStatus @default(draft)
+  target_audience Json          // filters for targeting leads/prospects
+  budget          Decimal?      @db.Decimal(10, 2)
+  start_date      DateTime?
+  end_date        DateTime?
+  content         Json          // campaign content (email template, banner, etc.)
+  metrics         Json          // performance metrics
+  created_by      Int
+  created_at      DateTime      @default(now())
+  updated_at      DateTime      @updatedAt
+
+  // Relations
+  builder         Builder       @relation(fields: [builder_id], references: [id])
+  creator         User          @relation(fields: [created_by], references: [id])
+
+  @@map("campaigns")
+}
+
+model BuilderAnalytics {
+  id                  Int      @id @default(autoincrement())
+  builder_id          Int
+  metric_type         String   // revenue, leads, conversions, engagement
+  metric_value        Decimal  @db.Decimal(15, 2)
+  period_start        DateTime
+  period_end          DateTime
+  breakdown           Json?    // additional breakdown data
+  created_at          DateTime @default(now())
+
+  // Relations
+  builder             Builder  @relation(fields: [builder_id], references: [id])
+
+  @@map("builder_analytics")
 }

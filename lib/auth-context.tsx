@@ -9,6 +9,7 @@ interface User {
   firstName: string;
   lastName: string;
   phone?: string;
+  role: string;
 }
 
 interface AuthContextType {
@@ -38,6 +39,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             firstName: profileData.user.firstName,
             lastName: profileData.user.lastName,
             phone: profileData.user.phone,
+            role: profileData.user.role,
           });
         } catch (error) {
           // Token might be invalid, remove it
@@ -69,6 +71,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         firstName: data.user.firstName,
         lastName: data.user.lastName,
         phone: data.user.phone,
+        role: data.user.role,
       });
     } catch (error) {
       throw error;
@@ -95,6 +98,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         firstName: data.user.firstName,
         lastName: data.user.lastName,
         phone: data.user.phone,
+        role: data.user.role,
       });
     } catch (error) {
       throw error;

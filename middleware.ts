@@ -23,6 +23,32 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // Role-based route protection
+  const roleBasedRoutes = {
+    // Admin only routes
+    '/admin': ['admin'],
+    '/api/v1/admin': ['admin'],
+
+    // Builder routes
+    '/dashboard/builder': ['builder'],
+    '/api/v1/builder': ['builder'],
+
+    // Agent routes
+    '/dashboard/agent': ['agent'],
+    '/api/v1/agent': ['agent'],
+
+    // Seller routes
+    '/dashboard/seller': ['seller'],
+    '/api/v1/seller': ['seller'],
+
+    // Buyer routes (can also be accessed by regular users)
+    '/dashboard/buyer': ['buyer', 'user'],
+    '/api/v1/buyer': ['buyer', 'user'],
+
+    // General dashboard (for buyers/users)
+    '/dashboard': ['buyer', 'user', 'agent', 'builder', 'seller', 'admin'],
+  };
+
   // Check for authorization header
   const authHeader = request.headers.get('authorization');
 
@@ -37,6 +63,20 @@ export function middleware(request: NextRequest) {
 
   try {
     const decoded = verifyAccessToken(token);
+    const userRole = decoded.role;
+
+    // Check role-based access for protected routes
+    for (const [route, allowedRoles] of Object.entries(roleBasedRoutes)) {
+      if (pathname.startsWith(route)) {
+        if (!allowedRoles.includes(userRole)) {
+          return NextResponse.json(
+            { error: { code: 'INSUFFICIENT_PERMISSIONS', message: 'Insufficient permissions for this resource' } },
+            { status: 403 }
+          );
+        }
+        break;
+      }
+    }
 
     // Add user info to request headers for use in API routes
     const requestHeaders = new Headers(request.headers);
