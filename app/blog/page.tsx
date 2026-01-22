@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { BlogListing } from '@/components/blog/BlogListing';
+import BlogClient from './BlogClient';
 
 export const metadata: Metadata = {
   title: 'Blog - NextBoomCity',
@@ -8,5 +8,5 @@ export const metadata: Metadata = {
 };
 
 export default function BlogPage() {
-  return <BlogListing />;
+  return <BlogClient />;
 }
