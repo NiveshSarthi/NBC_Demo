@@ -22,13 +22,13 @@ import {
   Tag
 } from "lucide-react";
 
-interface GiftInclusion {
+export interface GiftInclusion {
   name: string;
   value: number;
   description?: string;
 }
 
-interface Offer {
+export interface Offer {
   id: number;
   title: string;
   description?: string;
@@ -38,7 +38,7 @@ interface Offer {
   is_active: boolean;
 }
 
-interface GiftPackData {
+export interface GiftPackData {
   inclusions?: GiftInclusion[];
   images?: string[];
   terms?: string;
@@ -62,7 +62,7 @@ export function GiftPackShowcase({ giftPack }: GiftPackShowcaseProps) {
   try {
     parsedGiftPack = typeof giftPack === 'string' ? JSON.parse(giftPack) : giftPack;
   } catch {
-    parsedGiftPack = giftPack;
+    parsedGiftPack = {};
   }
 
   const { inclusions = [], images = [], terms, offers = [] } = parsedGiftPack;
@@ -204,11 +204,10 @@ export function GiftPackShowcase({ giftPack }: GiftPackShowcaseProps) {
                     <button
                       key={index}
                       onClick={() => setSelectedImageIndex(index)}
-                      className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 ${
-                        selectedImageIndex === index
-                          ? 'border-yellow-500'
-                          : 'border-gray-200'
-                      }`}
+                      className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 ${selectedImageIndex === index
+                        ? 'border-yellow-500'
+                        : 'border-gray-200'
+                        }`}
                     >
                       <img
                         src={image}

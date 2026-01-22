@@ -29,9 +29,10 @@ const updateProjectSchema = z.object({
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     // Get user ID from middleware
     const userId = request.headers.get('x-user-id');
     if (!userId) {
@@ -55,7 +56,7 @@ export async function GET(
       );
     }
 
-    const projectId = parseInt(params.id);
+    const projectId = parseInt(id);
 
     // Get project with ownership check
     const project = await prisma.property.findFirst({
@@ -148,9 +149,10 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     // Get user ID from middleware
     const userId = request.headers.get('x-user-id');
     if (!userId) {
@@ -174,7 +176,7 @@ export async function PUT(
       );
     }
 
-    const projectId = parseInt(params.id);
+    const projectId = parseInt(id);
     const body = await request.json();
 
     // Validate input
@@ -263,9 +265,10 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     // Get user ID from middleware
     const userId = request.headers.get('x-user-id');
     if (!userId) {
@@ -289,7 +292,7 @@ export async function DELETE(
       );
     }
 
-    const projectId = parseInt(params.id);
+    const projectId = parseInt(id);
 
     // Check if project exists and belongs to builder
     const existingProject = await prisma.property.findFirst({

@@ -98,13 +98,13 @@ export function setupARScene(
   renderer.setAnimationLoop((time, frame) => {
     if (frame && !hitTestSourceRequested) {
       const session = renderer.xr.getSession();
-      if (session) {
-        session.requestReferenceSpace('viewer').then((referenceSpace) => {
-          session.requestHitTestSource!({ space: referenceSpace }).then((source) => {
-            hitTestSource = source;
-          });
-        });
+      if (session && session.requestHitTestSource) {
         hitTestSourceRequested = true;
+        (async () => {
+          const referenceSpace = await session.requestReferenceSpace('viewer');
+          const source = await session.requestHitTestSource!({ space: referenceSpace });
+          hitTestSource = source ?? null;
+        })();
       }
     }
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { PropertyComparison } from '@/components/property/PropertyComparison';
 import { Button } from '@/components/ui/button';
@@ -31,7 +31,7 @@ interface Property {
   year_built?: number;
 }
 
-export default function ComparePage() {
+function ComparePageContent() {
   const searchParams = useSearchParams();
   const [properties, setProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
@@ -131,5 +131,19 @@ export default function ComparePage() {
     <div className="container mx-auto px-4 py-8">
       <PropertyComparison properties={properties} />
     </div>
+  );
+}
+
+export default function ComparePage() {
+  return (
+    <Suspense fallback={
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex items-center justify-center h-64">
+          <div className="text-lg">Loading...</div>
+        </div>
+      </div>
+    }>
+      <ComparePageContent />
+    </Suspense>
   );
 }

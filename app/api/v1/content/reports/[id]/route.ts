@@ -4,10 +4,10 @@ import { MarketReportModel, UpdateMarketReportData } from '@/lib/models/market-r
 // GET /api/v1/content/reports/[id] - Get individual market report
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const id = params.id;
+    const { id } = await params;
 
     const report = await MarketReportModel.findById(id);
 
@@ -34,9 +34,10 @@ export async function GET(
 // PUT /api/v1/content/reports/[id] - Update market report
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const userId = request.headers.get('x-user-id');
     const userRole = request.headers.get('x-user-role');
 
@@ -47,7 +48,6 @@ export async function PUT(
       );
     }
 
-    const id = params.id;
     const report = await MarketReportModel.findById(id);
 
     if (!report) {
@@ -88,9 +88,10 @@ export async function PUT(
 // DELETE /api/v1/content/reports/[id] - Delete market report
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const userId = request.headers.get('x-user-id');
     const userRole = request.headers.get('x-user-role');
 
@@ -101,7 +102,6 @@ export async function DELETE(
       );
     }
 
-    const id = params.id;
     const report = await MarketReportModel.findById(id);
 
     if (!report) {

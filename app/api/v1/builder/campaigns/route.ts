@@ -173,12 +173,18 @@ export async function POST(request: NextRequest) {
     // Create campaign
     const campaign = await prisma.campaign.create({
       data: {
-        ...campaignData,
+        title: campaignData.title,
+        description: campaignData.description,
+        type: campaignData.type,
+        status: campaignData.status,
+        budget: campaignData.budget,
+        content: campaignData.content,
         builder_id: userIdNum,
         created_by: userIdNum,
         target_audience: campaignData.targetAudience,
         start_date: campaignData.startDate ? new Date(campaignData.startDate) : null,
         end_date: campaignData.endDate ? new Date(campaignData.endDate) : null,
+        metrics: {}, // Default empty metrics object
       },
       include: {
         creator: {

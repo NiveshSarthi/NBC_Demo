@@ -1,10 +1,8 @@
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '../lib/database';
 import { hashPassword } from '../lib/auth';
 import { getMongoDb } from '../lib/database';
 import { BlogPostModel } from '../lib/models/blog-post';
 import { MarketReportModel } from '../lib/models/market-report';
-
-const prisma = new PrismaClient();
 
 // Enhanced locations with more cities and growth metrics
 const locations = [
@@ -1494,10 +1492,10 @@ async function seedProperties() {
   const propertiesWithIds = properties.map((prop, index) => ({
     ...prop,
     location_id: prop.city === 'Mumbai' ? mumbai.id :
-                 prop.city === 'Delhi' ? delhi.id :
-                 prop.city === 'Bangalore' ? bangalore.id :
-                 prop.city === 'Chennai' ? chennai.id :
-                 prop.city === 'Panaji' ? goa.id : null,
+      prop.city === 'Delhi' ? delhi.id :
+        prop.city === 'Bangalore' ? bangalore.id :
+          prop.city === 'Chennai' ? chennai.id :
+            prop.city === 'Panaji' ? goa.id : null,
     created_by: agent1.id
   }));
 

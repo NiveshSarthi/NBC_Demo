@@ -82,7 +82,7 @@ export function SchemaMarkup({ type, data }: SchemaMarkupProps) {
           },
           image: data.images?.map((img: any) => img.image_url) || [],
           url: `https://nextboomcity.com/properties/${data.id}`
-        } as Property;
+        } as unknown as Property;
 
       case 'real-estate-agent':
         return {

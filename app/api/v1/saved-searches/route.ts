@@ -61,8 +61,8 @@ export async function POST(request: NextRequest) {
         user_id: parseInt(userId),
         name,
         search_query,
-        filters: filters ? JSON.stringify(filters) : null,
-        location_bounds: location_bounds ? JSON.stringify(location_bounds) : null,
+        filters: filters ? JSON.stringify(filters) : undefined,
+        location_bounds: location_bounds ? JSON.stringify(location_bounds) : undefined,
         alert_enabled: alert_enabled || false,
       },
     });

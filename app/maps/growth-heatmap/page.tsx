@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { MapPin, TrendingUp, BarChart3, RefreshCw } from 'lucide-react'
-import L from 'leaflet'
+import type L from 'leaflet'
 
 // Mock growth rate data for Indian cities
 const growthData = {
@@ -104,6 +104,8 @@ export default function GrowthHeatmapPage() {
 
   const pointToLayer = (feature: any, latlng: any) => {
     const color = getColor(feature.properties.growthRate)
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const L = require('leaflet')
     return L.circleMarker(latlng, {
       color: color,
       fillColor: color,

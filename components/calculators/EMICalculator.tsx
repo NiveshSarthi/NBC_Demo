@@ -275,7 +275,7 @@ export function EMICalculator() {
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis dataKey="month" />
                       <YAxis />
-                      <Tooltip formatter={(value: number) => [`₹${value.toLocaleString()}`, '']} />
+                      <Tooltip formatter={(value) => [`₹${(value as number)?.toLocaleString() ?? ''}`, '']} />
                       <Legend />
                       <Area type="monotone" dataKey="principal" stackId="1" stroke="#8884d8" fill="#8884d8" />
                       <Area type="monotone" dataKey="interest" stackId="1" stroke="#82ca9d" fill="#82ca9d" />
@@ -410,49 +410,49 @@ export function EMICalculator() {
                 title: 'EMI Calculation',
                 text: `EMI: ₹${result?.emi.toLocaleString()}, Total: ₹${result?.totalAmount.toLocaleString()}`,
                 url: window.location.href,
-              }).catch(() => {});
+              }).catch(() => { });
             }}>
               Share
             </Button>
           </div>
-        </div>
 
-        {scenarios.length > 0 && (
-          <Card id="comparison">
-            <CardHeader>
-              <CardTitle>Scenario Comparison</CardTitle>
-              <CardDescription>Compare different loan scenarios</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b">
-                      <th className="text-left p-2">Scenario</th>
-                      <th className="text-right p-2">EMI</th>
-                      <th className="text-right p-2">Total Amount</th>
-                      <th className="text-right p-2">Total Interest</th>
-                      <th className="text-right p-2">Rate</th>
-                      <th className="text-right p-2">Tenure</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {scenarios.map((scenario, index) => (
-                      <tr key={index} className="border-b">
-                        <td className="p-2">{scenario.name}</td>
-                        <td className="text-right p-2">₹{scenario.result.emi.toLocaleString()}</td>
-                        <td className="text-right p-2">₹{scenario.result.totalAmount.toLocaleString()}</td>
-                        <td className="text-right p-2">₹{scenario.result.totalInterest.toLocaleString()}</td>
-                        <td className="text-right p-2">{scenario.formData.annualInterestRate}%</td>
-                        <td className="text-right p-2">{scenario.formData.tenureMonths} months</td>
+          {scenarios.length > 0 && (
+            <Card id="comparison">
+              <CardHeader>
+                <CardTitle>Scenario Comparison</CardTitle>
+                <CardDescription>Compare different loan scenarios</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b">
+                        <th className="text-left p-2">Scenario</th>
+                        <th className="text-right p-2">EMI</th>
+                        <th className="text-right p-2">Total Amount</th>
+                        <th className="text-right p-2">Total Interest</th>
+                        <th className="text-right p-2">Rate</th>
+                        <th className="text-right p-2">Tenure</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </CardContent>
-          </Card>
-        )}
+                    </thead>
+                    <tbody>
+                      {scenarios.map((scenario, index) => (
+                        <tr key={index} className="border-b">
+                          <td className="p-2">{scenario.name}</td>
+                          <td className="text-right p-2">₹{scenario.result.emi.toLocaleString()}</td>
+                          <td className="text-right p-2">₹{scenario.result.totalAmount.toLocaleString()}</td>
+                          <td className="text-right p-2">₹{scenario.result.totalInterest.toLocaleString()}</td>
+                          <td className="text-right p-2">{scenario.formData.annualInterestRate}%</td>
+                          <td className="text-right p-2">{scenario.formData.tenureMonths} months</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </div>
       )}
     </div>
   );

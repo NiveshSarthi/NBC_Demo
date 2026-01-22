@@ -78,10 +78,11 @@ const mockMasterPlans: Record<string, any> = {
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { city: string } }
+  { params }: { params: Promise<{ city: string }> }
 ) {
   try {
-    const city = params.city.toLowerCase()
+    const { city: rawCity } = await params
+    const city = rawCity.toLowerCase()
 
     // Try to get from database first
     const location = await prisma.location.findFirst({

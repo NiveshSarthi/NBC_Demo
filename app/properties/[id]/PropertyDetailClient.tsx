@@ -9,7 +9,8 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { SpecialHighlightBadge } from "@/components/property/SpecialHighlightBadge";
-import { GiftPackShowcase } from "@/components/property/GiftPackShowcase";
+import type { Property } from "@prisma/client";
+import { GiftPackShowcase, type GiftPackData } from "@/components/property/GiftPackShowcase";
 import { TourType, TourData, detectTourType } from "@/components/virtual-tour/VirtualTourViewer";
 import AIChatbot from "@/components/ai/AIChatbot";
 
@@ -121,38 +122,11 @@ interface PropertyDetailClientProps {
   };
 }
 
-interface PropertyData {
-  id: number;
-  title: string;
-  description?: string;
-  property_type: string;
-  listing_type: string;
-  address?: string;
-  city?: string;
-  state?: string;
-  price?: number;
-  bedrooms?: number;
-  bathrooms?: number;
-  area?: number;
-  area_unit?: string;
-  builder_id?: number;
-  created_by?: number;
+interface PropertyData extends Property {
   builder?: any;
   images?: any[];
   predictions?: any[];
   reraCompliance?: any;
-  floor_plan_url?: string;
-  three_d_tour_url?: string;
-  virtual_tour_url?: string;
-  video_tour_url?: string;
-  drone_footage_url?: string;
-  time_lapse_url?: string;
-  vastu_compliant?: boolean;
-  orientation?: string;
-  carpet_area?: number;
-  built_up_area?: number;
-  gift_pack?: any;
-  // Add other fields as needed
 }
 
 interface BuilderData {
@@ -342,10 +316,10 @@ export default function PropertyDetailClient({ params }: PropertyDetailClientPro
                   </div>
                   <div className="text-right">
                     <div className="text-3xl font-bold text-green-600">
-                      ₹{property.price ? (property.price / 10000000).toFixed(1) + 'Cr' : 'Contact for Price'}
+                      ₹{property.price ? (Number(property.price) / 10000000).toFixed(1) + 'Cr' : 'Contact for Price'}
                     </div>
                     <div className="text-sm text-gray-600">
-                      {property.area && property.price ? `₹${Math.round(property.price / property.area)}/sq ft` : ''}
+                      {property.area && property.price ? `₹${Math.round(Number(property.price) / Number(property.area))}/sq ft` : ''}
                     </div>
                     <SpecialHighlightBadge property={property} />
                   </div>
@@ -354,7 +328,7 @@ export default function PropertyDetailClient({ params }: PropertyDetailClientPro
                 {/* Gift Pack Showcase */}
                 {property.gift_pack && (
                   <div className="mt-6">
-                    <GiftPackShowcase giftPack={property.gift_pack} />
+                    <GiftPackShowcase giftPack={property.gift_pack as unknown as GiftPackData} />
                   </div>
                 )}
 
@@ -371,7 +345,7 @@ export default function PropertyDetailClient({ params }: PropertyDetailClientPro
                   </div>
                   <div className="text-center">
                     <Square className="h-6 w-6 mx-auto mb-2 text-gray-600" />
-                    <div className="font-semibold">{property.area || '-'}</div>
+                    <div className="font-semibold">{property.area ? property.area.toString() : '-'}</div>
                     <div className="text-sm text-gray-600">{property.area_unit || 'sq ft'}</div>
                   </div>
                 </div>
@@ -584,13 +558,13 @@ export default function PropertyDetailClient({ params }: PropertyDetailClientPro
             {/* Floor Plans & Layouts */}
             <Suspense fallback={<LoadingSpinner />}>
               <BuildingPlansViewer
-                floorPlanUrl={property.floor_plan_url}
-                threeDTourUrl={property.three_d_tour_url}
-                vastuCompliant={property.vastu_compliant}
-                orientation={property.orientation}
-                carpetArea={property.carpet_area}
-                builtUpArea={property.built_up_area}
-                areaUnit={property.area_unit}
+                floorPlanUrl={property.floor_plan_url || undefined}
+                threeDTourUrl={property.three_d_tour_url || undefined}
+                vastuCompliant={property.vastu_compliant ?? undefined}
+                orientation={property.orientation || undefined}
+                carpetArea={property.carpet_area ? Number(property.carpet_area) : undefined}
+                builtUpArea={property.built_up_area ? Number(property.built_up_area) : undefined}
+                areaUnit={property.area_unit || undefined}
                 propertyTitle={property.title}
               />
             </Suspense>
@@ -652,29 +626,26 @@ export default function PropertyDetailClient({ params }: PropertyDetailClientPro
                             <div className="flex items-center space-x-2">
                               <div className="w-24 h-3 bg-gray-200 rounded-full">
                                 <div
-                                  className={`h-full rounded-full ${
-                                    scoreData.total_score >= 80 ? 'bg-green-500' :
+                                  className={`h-full rounded-full ${scoreData.total_score >= 80 ? 'bg-green-500' :
                                     scoreData.total_score >= 60 ? 'bg-yellow-500' : 'bg-red-500'
-                                  }`}
+                                    }`}
                                   style={{ width: `${Math.min(scoreData.total_score, 100)}%` }}
                                 ></div>
                               </div>
-                              <span className={`font-bold text-lg ${
-                                scoreData.total_score >= 80 ? 'text-green-600' :
+                              <span className={`font-bold text-lg ${scoreData.total_score >= 80 ? 'text-green-600' :
                                 scoreData.total_score >= 60 ? 'text-yellow-600' : 'text-red-600'
-                              }`}>
+                                }`}>
                                 {scoreData.total_score.toFixed(1)}/100
                               </span>
                             </div>
                           </div>
 
                           <div className="text-center">
-                            <Badge variant="secondary" className={`text-sm ${
-                              scoreData.recommendation === 'Strong Buy' ? 'bg-green-100 text-green-800' :
+                            <Badge variant="secondary" className={`text-sm ${scoreData.recommendation === 'Strong Buy' ? 'bg-green-100 text-green-800' :
                               scoreData.recommendation === 'Buy' ? 'bg-blue-100 text-blue-800' :
-                              scoreData.recommendation === 'Hold' ? 'bg-yellow-100 text-yellow-800' :
-                              'bg-red-100 text-red-800'
-                            }`}>
+                                scoreData.recommendation === 'Hold' ? 'bg-yellow-100 text-yellow-800' :
+                                  'bg-red-100 text-red-800'
+                              }`}>
                               {scoreData.recommendation}
                             </Badge>
                           </div>
@@ -804,7 +775,13 @@ export default function PropertyDetailClient({ params }: PropertyDetailClientPro
         {/* Property Recommendations */}
         <div className="container mx-auto px-4 py-8">
           <Suspense fallback={<LoadingSpinner />}>
-            <PropertyRecommendations currentProperty={property} />
+            <PropertyRecommendations
+              currentProperty={{
+                ...property,
+                price: property.price ? Number(property.price) : undefined,
+                area: property.area ? Number(property.area) : undefined,
+              } as any}
+            />
           </Suspense>
         </div>
       </div>
@@ -817,7 +794,7 @@ export default function PropertyDetailClient({ params }: PropertyDetailClientPro
               <VirtualTourViewer
                 tourData={{
                   type: detectTourType(property),
-                  url: property.virtual_tour_url || property.video_tour_url || property.drone_footage_url || property.time_lapse_url,
+                  url: property.virtual_tour_url || property.video_tour_url || property.drone_footage_url || property.time_lapse_url || undefined,
                   images: virtualTourImages
                 }}
                 propertyTitle={property.title}

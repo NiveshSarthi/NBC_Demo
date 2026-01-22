@@ -4,7 +4,7 @@ import { BaseMap, GeoJSONLayer, PropertyMarker } from '@/components/maps'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { MapPin, Church, Users, TrendingUp } from 'lucide-react'
-import L from 'leaflet'
+import type L from 'leaflet'
 
 // Mock religious tourism data
 const religiousSites = {
@@ -71,6 +71,8 @@ export default function ReligiousTourismPage() {
   }
 
   const pointToLayer = (feature: any, latlng: any) => {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const L = require('leaflet')
     return L.circleMarker(latlng, {
       color: '#8b5cf6',
       fillColor: '#8b5cf6',

@@ -3,9 +3,10 @@ import { prisma } from '@/lib/database';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     // Get user ID from middleware
     const userId = request.headers.get('x-user-id');
     if (!userId) {
@@ -16,7 +17,7 @@ export async function GET(
     }
 
     const userIdNum = parseInt(userId, 10);
-    const applicationId = parseInt(params.id, 10);
+    const applicationId = parseInt(id, 10);
 
     if (isNaN(applicationId)) {
       return NextResponse.json(

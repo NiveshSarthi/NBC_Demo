@@ -7,7 +7,6 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 // Using buttons instead of tabs for city selection
 import { MapPin, Building, Home, Factory, TreePine, Car, Zap } from 'lucide-react'
-import L from 'leaflet'
 
 // Mock master plan data for different cities
 const masterPlans = {

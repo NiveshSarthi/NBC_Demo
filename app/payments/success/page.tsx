@@ -1,13 +1,13 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { CheckCircle, Download, Home, Receipt } from 'lucide-react';
 import Link from 'next/link';
 
-export default function PaymentSuccessPage() {
+function PaymentSuccessContent() {
   const searchParams = useSearchParams();
   const [paymentDetails, setPaymentDetails] = useState<any>(null);
 
@@ -156,5 +156,17 @@ export default function PaymentSuccessPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function PaymentSuccessPage() {
+  return (
+    <Suspense fallback={
+      <div className="container mx-auto px-4 py-16 flex items-center justify-center">
+        <div className="text-lg">Loading payment details...</div>
+      </div>
+    }>
+      <PaymentSuccessContent />
+    </Suspense>
   );
 }

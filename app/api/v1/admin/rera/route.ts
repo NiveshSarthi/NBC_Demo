@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/lib/database';
 import { verifyAccessToken } from '@/lib/auth';
-
-const prisma = new PrismaClient();
 
 // Get RERA compliance records for verification
 export async function GET(request: NextRequest) {

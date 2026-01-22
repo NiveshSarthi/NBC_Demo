@@ -1,8 +1,7 @@
 'use client'
 
-import { useEffect } from 'react'
-import { GeoJSON as LeafletGeoJSON } from 'leaflet'
 import dynamic from 'next/dynamic'
+import type { GeoJSON as LeafletGeoJSON } from 'leaflet'
 
 const GeoJSON = dynamic(
   () => import('react-leaflet').then((mod) => mod.GeoJSON),

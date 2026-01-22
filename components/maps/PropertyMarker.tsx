@@ -42,7 +42,7 @@ export function PropertyMarker({ property, icon }: PropertyMarkerProps) {
           </p>
           <div className="flex items-center justify-between mb-2">
             <span className="text-xl font-bold text-green-600">
-              ₹{property.price.toLocaleString()}
+              ₹{property.price?.toLocaleString() ?? 'N/A'}
             </span>
             <span className="text-sm text-gray-500">
               {property.property_type}

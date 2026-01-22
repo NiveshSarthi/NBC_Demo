@@ -61,7 +61,7 @@ export function GiftPackDialogClient({ property }: GiftPackDialogClientProps) {
           </DialogDescription>
         </DialogHeader>
         <div className="mt-4">
-          <GiftPackShowcase giftPack={property.gift_pack} />
+          <GiftPackShowcase giftPack={property.gift_pack as string | GiftPackData | null} />
         </div>
       </DialogContent>
     </Dialog>

@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/lib/database';
 import bcrypt from 'bcryptjs';
 import { verifyAccessToken } from '@/lib/auth';
 import { UserRole } from '@prisma/client';
-
-const prisma = new PrismaClient();
 
 export async function GET(request: NextRequest) {
   try {
@@ -191,7 +189,7 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json(user);
   } catch (error) {
     console.error('Error updating user:', error);
-    if (error.code === 'P2025') {
+    if (error instanceof Error && 'code' in error && (error as { code: string }).code === 'P2025') {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
@@ -226,7 +224,7 @@ export async function DELETE(request: NextRequest) {
     return NextResponse.json({ message: 'User deleted successfully' });
   } catch (error) {
     console.error('Error deleting user:', error);
-    if (error.code === 'P2025') {
+    if (error instanceof Error && 'code' in error && (error as { code: string }).code === 'P2025') {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

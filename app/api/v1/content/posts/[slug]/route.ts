@@ -5,10 +5,11 @@ import { CommentModel } from '@/lib/models/comment';
 // GET /api/v1/content/posts/[slug] - Get individual blog post
 export async function GET(
   request: NextRequest,
-  { params }: { params: { slug: string } }
+  props: { params: Promise<{ slug: string }> }
 ) {
   try {
-    const slug = params.slug;
+    const params = await props.params;
+    const { slug } = params;
 
     const post = await BlogPostModel.findBySlug(slug);
 
@@ -43,7 +44,7 @@ export async function GET(
 // PUT /api/v1/content/posts/[slug] - Update blog post
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { slug: string } }
+  props: { params: Promise<{ slug: string }> }
 ) {
   try {
     const userId = request.headers.get('x-user-id');
@@ -56,7 +57,8 @@ export async function PUT(
       );
     }
 
-    const slug = params.slug;
+    const params = await props.params;
+    const { slug } = params;
     const post = await BlogPostModel.findBySlug(slug);
 
     if (!post) {
@@ -97,7 +99,7 @@ export async function PUT(
 // DELETE /api/v1/content/posts/[slug] - Delete blog post
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { slug: string } }
+  props: { params: Promise<{ slug: string }> }
 ) {
   try {
     const userId = request.headers.get('x-user-id');
@@ -110,7 +112,8 @@ export async function DELETE(
       );
     }
 
-    const slug = params.slug;
+    const params = await props.params;
+    const { slug } = params;
     const post = await BlogPostModel.findBySlug(slug);
 
     if (!post) {

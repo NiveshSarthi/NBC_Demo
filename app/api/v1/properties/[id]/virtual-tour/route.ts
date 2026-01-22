@@ -3,10 +3,11 @@ import { prisma } from '@/lib/database';
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const propertyId = parseInt(params.id);
+    const { id } = await params;
+    const propertyId = parseInt(id);
 
     const property = await prisma.property.findUnique({
       where: { id: propertyId },
@@ -41,10 +42,11 @@ export async function GET(
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const propertyId = parseInt(params.id);
+    const { id } = await params;
+    const propertyId = parseInt(id);
     const body = await req.json();
 
     const { virtualTourUrl, videoTourUrl } = body;

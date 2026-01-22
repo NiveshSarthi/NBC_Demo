@@ -90,13 +90,13 @@ export class BlogPostModel {
   // Find by ID
   static async findById(id: string): Promise<BlogPost | null> {
     const db = await getMongoDb();
-    return db.collection(this.COLLECTION).findOne({ _id: new ObjectId(id) });
+    return db.collection<BlogPost>(this.COLLECTION).findOne({ _id: new ObjectId(id) });
   }
 
   // Find by slug
   static async findBySlug(slug: string): Promise<BlogPost | null> {
     const db = await getMongoDb();
-    return db.collection(this.COLLECTION).findOne({ slug });
+    return db.collection<BlogPost>(this.COLLECTION).findOne({ slug });
   }
 
   // Update blog post
@@ -111,13 +111,13 @@ export class BlogPostModel {
       updateData.slug = this.generateSlug(data.title);
     }
 
-    const result = await db.collection(this.COLLECTION).findOneAndUpdate(
+    const result = await db.collection<BlogPost>(this.COLLECTION).findOneAndUpdate(
       { _id: new ObjectId(id) },
       { $set: updateData },
       { returnDocument: 'after' }
     );
 
-    return result.value;
+    return result ?? null;
   }
 
   // Delete blog post
@@ -145,14 +145,14 @@ export class BlogPostModel {
       filter.tags = tag;
     }
 
-    const posts = await db.collection(this.COLLECTION)
+    const posts = await db.collection<BlogPost>(this.COLLECTION)
       .find(filter)
       .sort({ publishedAt: -1 })
       .skip(skip)
       .limit(limit)
       .toArray();
 
-    const total = await db.collection(this.COLLECTION).countDocuments(filter);
+    const total = await db.collection<BlogPost>(this.COLLECTION).countDocuments(filter);
 
     return { posts, total };
   }
@@ -160,7 +160,7 @@ export class BlogPostModel {
   // Increment view count
   static async incrementViewCount(id: string): Promise<void> {
     const db = await getMongoDb();
-    await db.collection(this.COLLECTION).updateOne(
+    await db.collection<BlogPost>(this.COLLECTION).updateOne(
       { _id: new ObjectId(id) },
       { $inc: { viewCount: 1 } }
     );
@@ -169,7 +169,7 @@ export class BlogPostModel {
   // Increment like count
   static async incrementLikeCount(id: string): Promise<void> {
     const db = await getMongoDb();
-    await db.collection(this.COLLECTION).updateOne(
+    await db.collection<BlogPost>(this.COLLECTION).updateOne(
       { _id: new ObjectId(id) },
       { $inc: { likeCount: 1 } }
     );
@@ -183,7 +183,7 @@ export class BlogPostModel {
       filter.status = status;
     }
 
-    return db.collection(this.COLLECTION)
+    return db.collection<BlogPost>(this.COLLECTION)
       .find(filter)
       .sort({ createdAt: -1 })
       .toArray();
@@ -195,7 +195,7 @@ export class BlogPostModel {
     const skip = (page - 1) * limit;
 
     const filter = {
-      status: 'published',
+      status: 'published' as const,
       $or: [
         { title: { $regex: query, $options: 'i' } },
         { content: { $regex: query, $options: 'i' } },
@@ -204,14 +204,14 @@ export class BlogPostModel {
       ],
     };
 
-    const posts = await db.collection(this.COLLECTION)
+    const posts = await db.collection<BlogPost>(this.COLLECTION)
       .find(filter)
       .sort({ publishedAt: -1 })
       .skip(skip)
       .limit(limit)
       .toArray();
 
-    const total = await db.collection(this.COLLECTION).countDocuments(filter);
+    const total = await db.collection<BlogPost>(this.COLLECTION).countDocuments(filter);
 
     return { posts, total };
   }
@@ -219,7 +219,7 @@ export class BlogPostModel {
   // Get popular posts
   static async getPopularPosts(limit: number = 10): Promise<BlogPost[]> {
     const db = await getMongoDb();
-    return db.collection(this.COLLECTION)
+    return db.collection<BlogPost>(this.COLLECTION)
       .find({ status: 'published' })
       .sort({ viewCount: -1 })
       .limit(limit)

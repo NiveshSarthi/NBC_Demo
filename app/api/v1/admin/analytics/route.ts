@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/lib/database';
 import { verifyAccessToken } from '@/lib/auth';
-
-const prisma = new PrismaClient();
 
 // Get comprehensive analytics data
 export async function GET(request: NextRequest) {
@@ -152,10 +150,11 @@ export async function GET(request: NextRequest) {
     ]);
 
     // Calculate conversion metrics
-    const viewCount = conversionRates.find(c => c.event_type === 'view')?._count?.event_type || 0;
-    const inquiryCount = conversionRates.find(c => c.event_type === 'inquiry')?._count?.event_type || 0;
-    const saveCount = conversionRates.find(c => c.event_type === 'save')?._count?.event_type || 0;
-    const contactCount = conversionRates.find(c => c.event_type === 'contact')?._count?.event_type || 0;
+    type ConversionRate = { event_type: string; _count: { event_type: number } };
+    const viewCount = conversionRates.find((c: ConversionRate) => c.event_type === 'view')?._count?.event_type || 0;
+    const inquiryCount = conversionRates.find((c: ConversionRate) => c.event_type === 'inquiry')?._count?.event_type || 0;
+    const saveCount = conversionRates.find((c: ConversionRate) => c.event_type === 'save')?._count?.event_type || 0;
+    const contactCount = conversionRates.find((c: ConversionRate) => c.event_type === 'contact')?._count?.event_type || 0;
 
     const conversionRate = viewCount > 0 ? ((inquiryCount + contactCount) / viewCount * 100) : 0;
 
@@ -170,27 +169,27 @@ export async function GET(request: NextRequest) {
         recentUsers,
         conversionRate: Math.round(conversionRate * 100) / 100,
       },
-      usersByRole: usersByRole.reduce((acc, curr) => {
+      usersByRole: usersByRole.reduce((acc: Record<string, number>, curr: { role: string; _count: { role: number } }) => {
         acc[curr.role] = curr._count.role;
         return acc;
       }, {} as Record<string, number>),
-      propertyStatus: propertyStatusCounts.reduce((acc, curr) => {
+      propertyStatus: propertyStatusCounts.reduce((acc: Record<string, number>, curr: { status: string; _count: { status: number } }) => {
         acc[curr.status] = curr._count.status;
         return acc;
       }, {} as Record<string, number>),
-      inquiryStatus: inquiryStatusCounts.reduce((acc, curr) => {
+      inquiryStatus: inquiryStatusCounts.reduce((acc: Record<string, number>, curr: { status: string; _count: { status: number } }) => {
         acc[curr.status] = curr._count.status;
         return acc;
       }, {} as Record<string, number>),
-      paymentsByType: paymentsByType.reduce((acc, curr) => {
+      paymentsByType: (paymentsByType as Array<{ payment_type: string; _count: { payment_type: number }; _sum: { amount: unknown } }>).reduce((acc, curr) => {
         acc[curr.payment_type] = {
           count: curr._count.payment_type,
-          revenue: curr._sum.amount || 0,
+          revenue: Number(curr._sum.amount) || 0,
         };
         return acc;
       }, {} as Record<string, { count: number; revenue: number }>),
       topProperties,
-      leadsBySource: leadsBySource.reduce((acc, curr) => {
+      leadsBySource: leadsBySource.reduce((acc: Record<string, number>, curr: { event_type: string; _count: { event_type: number } }) => {
         acc[curr.event_type] = curr._count.event_type;
         return acc;
       }, {} as Record<string, number>),

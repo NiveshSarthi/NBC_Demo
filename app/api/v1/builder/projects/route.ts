@@ -223,10 +223,29 @@ export async function POST(request: NextRequest) {
 
     const projectData = validationResult.data;
 
-    // Create project
+    // Create project - map camelCase to snake_case for Prisma
     const project = await prisma.property.create({
       data: {
-        ...projectData,
+        title: projectData.title,
+        description: projectData.description,
+        property_type: projectData.propertyType,
+        sub_type: projectData.subType,
+        location_id: projectData.locationId,
+        address: projectData.address,
+        city: projectData.city,
+        state: projectData.state,
+        pincode: projectData.pincode,
+        latitude: projectData.latitude,
+        longitude: projectData.longitude,
+        price: projectData.price,
+        area: projectData.area,
+        area_unit: projectData.areaUnit,
+        bedrooms: projectData.bedrooms,
+        bathrooms: projectData.bathrooms,
+        possession_status: projectData.possessionStatus,
+        project_name: projectData.projectName,
+        featured: projectData.featured,
+        premium_listing: projectData.premiumListing,
         created_by: userIdNum,
         builder_id: builder.id
       },

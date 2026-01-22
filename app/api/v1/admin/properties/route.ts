@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/lib/database';
 import { verifyAccessToken } from '@/lib/auth';
-
-const prisma = new PrismaClient();
 
 // Get properties for admin moderation
 export async function GET(request: NextRequest) {
