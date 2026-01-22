@@ -6,6 +6,7 @@ import { LoadingSpinner } from '@/components/ui/loading-spinner';
 // Lazy load the calculator suite
 const LoanCalculatorSuite = dynamic(() => import('@/components/calculators/LoanCalculatorSuite').then(mod => ({ default: mod.LoanCalculatorSuite })), {
   loading: () => <LoadingSpinner />,
+  ssr: false,
 });
 
 export default function CalculatorsPage() {
